@@ -4,9 +4,10 @@
         <h2>{{title()}}</h2>
         <ng-content></ng-content>
         <div class="btn-wrapper">
-            <button 
+            <button
+                type="button"
                 class="btnPrimary"
-                [disabled]="disablePrimaryButton()" 
+                [disabled]="disablePrimaryButton()"
                 (click)="submit()"
             >
                 {{primaryButtonText()}}
@@ -16,11 +17,7 @@
                 <span>or</span>
                 <div></div>
             </div>
-            <button class="btnSecondary" (click)="navigate()">{{secondaryButtonText()}}</button>
+            <button type="button" class="btnSecondary" (click)="navigate()">{{secondaryButtonText()}}</button>
         </div>
-    </section>
-    <section class="main-section">
-        <h2>Verde livre</h2>
-        <img src="assets/png/bg-main.png" alt="Bg Main"/>
     </section>
 </main>

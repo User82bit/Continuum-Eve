@@ -1,149 +1,39 @@
 @use "../../../styles/_variables.scss" as *;
-@use '../../../styles/_breakpoints.scss' as *;
 
 .main {
-    padding: 40px 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    width: 100%;
-    max-width: 1200px; // Evita que o layout estique infinitamente em telas ultra-wide
+    padding: 24px;
+    max-width: 1200px;
     margin: 0 auto;
 }
 
 .card-status-robot {
-    width: 100%;
-    background-color: $color-bg-light-surface;
-    border: 1px solid $color-border;
-    border-radius: 12px;
-    padding: 16px;
-    
-    // Configuração base: Mobile (Empilhado)
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
-    gap: 16px;
-    text-align: center;
-
-    // Quando for para o Desktop (Ajuste fino)
-    @include lg {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        padding: 20px 24px;
-        text-align: left;
-    }
+    padding: 24px;
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: 16px;
+    margin-bottom: 24px;
 
     .status-info {
         display: flex;
-        flex-direction: column; // Alinha bolinha e texto verticalmente se faltar espaço no celular
         align-items: center;
         gap: 12px;
-
-        @include md {
-            flex-direction: row; // Mantém na horizontal a partir de tablets
-        }
-
-        p {
-            font-size: 1rem;
-            color: $color-text-primary;
-            margin: 0;
-
-            strong {
-                color: $color-green-deep;
-                font-weight: 700;
-            }
-        }
-    }
-
-    // A bolinha piscante ou indicadora de status
-    .indicator-dot {
-        width: 12px;
-        height: 12px;
-        background-color: #95a5a6; // Cor padrão neutra
-        border-radius: 50%;
-        display: inline-block;
         
-        &.carregando {
-            background-color: #f1c40f; // Amarelo carregando
-            box-shadow: 0 0 8px rgba(#f1c40f, 0.6);
-            animation: pulse 2s infinite;
-        }
-        &.desativado {
-            background-color: #e74c3c; // Vermelho desativado
-            box-shadow: 0 0 8px rgba(#e74c3c, 0.6);
-            animation: pulse 3s infinite;
-        }
-        &.ativo {
-            background-color: #2ecc71; // Verde ativo
-            box-shadow: 0 0 8px rgba(#2ecc71, 0.6);
-            animation: pulse 0.5s infinite;
-        }
-    }
-
-    // O botão que estava quebrando o layout
-    .details-btn {
-        width: 100%; // Ocupa a largura total no mobile para ficar fácil de clicar
-        padding: 12px 20px;
-        background-color: $color-bg-primary;
-        border: 1px solid $color-border;
-        border-radius: 8px;
-        color: $color-text-primary;
-        font-weight: 600;
-        font-size: 0.95rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-
-        span {
-            transition: transform 0.2s ease;
-        }
-
-        &:hover {
-            border-color: $color-border-focus;
-            color: $color-green-deep;
-            background-color: $color-bg-surface;
-
-            span {
-                transform: translateX(2px);
-            }
-        }
-
-        // No desktop ele deixa de ser gigante e volta para o tamanho normal do design original
-        @include lg {
-            width: auto;
-            padding: 10px 20px;
+        .indicator-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: $color-success;
+            box-shadow: 0 0 8px $color-success;
         }
     }
 }
 
 .secondary {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    gap: 16px;
-    
-    @include lg {
-        flex-direction: row;
-        align-items: stretch; // CRUCIAL: força todos os cards a esticarem até a altura do maior!
-        
-        & > * {
-            flex: 1; // Distribui a largura igualmente
-            display: flex; // Permite que o componente interno também se estique
-        }
-    }
-}
-
-@keyframes pulse {
-    0%, 100% {
-        transform: scale(1);
-        opacity: 1;
-    } 
-    50% {
-        transform: scale(1.3);
-        opacity: 0.7;
-    }
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-bottom: 24px;
 }

@@ -4,28 +4,33 @@
 .card {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    border-radius: 12px;
+    gap: 16px;
+    border-radius: 14px;
     border: 1px solid $color-border;
-    background-color: $color-bg-surface;
+    background-color: $color-surface;
     padding: 24px;
     width: 100%;
-    height: 100%; // Garante que o card ocupe toda a altura disponível do pai
-    flex-grow: 1; // Faz o card crescer se o espaço permitir
+    height: 100%;
     box-sizing: border-box;
     font-size: 1rem;
     color: $color-text-primary;
+    transition: background-color 0.2s, border-color 0.2s;
+
+    &:hover {
+        background-color: $color-surface-hover;
+        border-color: $color-border-strong;
+    }
     
     p {
         margin: 0;
         line-height: 1.5;
+        color: $color-text-secondary;
     }
 }
 
 .status-display {
     align-items: flex-start;
     justify-content: center;
-    // Removido o min-height fixo daqui para evitar travar o layout
 }
 
 .banner {
@@ -33,8 +38,8 @@
     justify-content: center;
     text-align: center;
     min-height: 180px;
-    background-color: $color-bg-light-surface;
-    border: 1px dashed $color-border; // Um toque moderno para itens "Em desenvolvimento"
-    color: #7f8c8d;
+    background-color: $color-surface-elevated;
+    border: 1px dashed $color-border;
+    color: $color-text-muted;
     font-size: 1.1rem;
 }
