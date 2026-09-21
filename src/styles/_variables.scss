@@ -1,19 +1,33 @@
-$color-bg-primary: #F7F9F5;
-$color-bg-surface: #dbe2d8;
-$color-bg-light-surface: #f2f7f0;
+$color-bg-primary: #07100A;
+$color-bg-secondary: #0B1510;
 
-$color-green-deep: #2D5A27;
-$color-green-mid: #4A8C3F;
+$color-surface: #101B14;
+$color-surface-hover: #15241A;
+$color-surface-elevated: #1A2B1F;
 
-$color-text-primary: #1C1C1C;
-$color-text-secondary: #6B7B69;
-$color-text-placeholder: #A8BCA6;
+$color-green-deep: #1E4A2A;
+$color-green-primary: #3F8F4A;
+$color-green-mid: #55A85F;
+$color-green-light: #72C27B;
 
-$color-border: #C5D4C2;
-$color-border-focus: #4A8C3F;
+$color-text-primary: #F2F5F2;
+$color-text-secondary: #AAB7AC;
+$color-text-muted: #748177;
 
-$color-link: #4A8C3F;
+$color-border: rgba(145, 180, 150, 0.12);
+$color-border-strong: rgba(145, 180, 150, 0.20);
 
-$color-lake: #7BA7BC;
-$color-lake-hover: #5C8FA3;
-$color-water-refletion: #bbddee;
+$color-accent-soft: rgba(63, 143, 74, 0.14);
+
+$color-telemetry: #42AEB5;
+
+$color-success: #55C978;
+$color-warning: #E2AF50;
+$color-danger: #E05A5A;
+
+// Compatibility/Legacy mappings to fix build errors
+$color-bg-surface: $color-surface;
+$color-bg-light-surface: $color-surface-hover;
+$color-accent: $color-green-primary;
+$color-border-focus: $color-green-mid;
+$color-text-placeholder: $color-text-muted;

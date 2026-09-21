@@ -1,7 +1,8 @@
 <section class="btn-section">
-    <button class="route-btn" routerLink="/home"><img src="assets/svg/home.svg" width="40"></button>
-    <button class="route-btn" routerLink="/info"><img src="assets/svg/info.svg" width="40"></button>
-    <button class="route-btn" routerLink="/contact"><img src="assets/svg/headset.svg" width="40"></button>
-    <button class="route-btn" routerLink="/controller" [disabled]="!IsAdmin"><img src="assets/svg/remote-control.svg" width="40"></button>
-    <!-- <button class="route-btn" (click)="toggleAdmin()"><img src="assets/svg/remote-control.svg" width="40"></button> -->
+    <button class="route-btn" routerLink="/home" routerLinkActive="active"><img src="assets/svg/home.svg" width="40"></button>
+    <button class="route-btn" routerLink="/info" routerLinkActive="active"><img src="assets/svg/info.svg" width="40"></button>
+    <button class="route-btn" routerLink="/contact" routerLinkActive="active"><img src="assets/svg/headset.svg" width="40"></button>
+    @if (isAdmin()) {
+        <button class="route-btn" routerLink="/controller" routerLinkActive="active"><img src="assets/svg/remote-control.svg" width="40"></button>
+    }
 </section>

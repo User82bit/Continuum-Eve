@@ -1,62 +1,41 @@
-@use "../../../../styles/_variables.scss" as *;
-@use "../../../../styles/_breakpoints.scss" as *;
+@use 'styles/variables' as *;
 
 .btn-section {
-    flex-grow: 0.1;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    padding: .4dvh 0;
-    gap: 2dvh;
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(16, 27, 20, 0.72);
+  backdrop-filter: blur(18px) saturate(120%);
+  -webkit-backdrop-filter: blur(18px) saturate(120%);
+  border: 1px solid $color-border;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+}
 
-    .route-btn {
-        background-color: $color-bg-surface;
-        border-radius: 12px;
-        padding: .4dvh;
-        border: .2dvh solid transparent;
-        outline: none;
+.route-btn {
+  padding: 8px;
+  border-radius: 12px;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-        &:hover {
-            background-color: $color-text-placeholder;
-            border-color: $color-border-focus;
-            cursor: pointer;
-        }
+  &:hover {
+    background: $color-surface-hover;
+  }
 
-        &:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
+  &.active {
+    background: rgba(63, 143, 74, 0.24);
+    border: 1px solid rgba(145, 180, 150, 0.2);
+  }
 
-            &:hover {
-                background-color: $color-bg-surface;
-                border-color: transparent;
-            }
-        }
-    }
-
-    @include lg {
-        position: fixed;
-        left: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 10vh;
-        height:40vh;
-        background: rgba(255, 255, 255, 0.9);
-        border-radius: 0 16px 16px 0;
-        box-shadow: .2dvh 0 .6dvh rgba(0,0,0,0.15);
-
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: space-around;
-
-        backdrop-filter: blur(8px);
-
-        .route-btn {
-            img {
-                width: 6vh;
-            }
-        }
-    }
+  img {
+    width: 24px;
+    height: 24px;
+  }
 }

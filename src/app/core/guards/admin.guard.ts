@@ -2,14 +2,15 @@ import { inject } from '@angular/core';
 import { Router, CanActivateFn } from '@angular/router';
 import { SessionService } from '../services/session.service';
 
-export const authGuard: CanActivateFn = (route, state) => {
+export const adminGuard: CanActivateFn = (route, state) => {
   const sessionService = inject(SessionService);
   const router = inject(Router);
 
-  if (sessionService.token) {
+  if (sessionService.token && sessionService.isAdmin) {
     return true;
   }
 
-  router.navigate(['/login']);
+  // Acesso negado
+  router.navigate(['/access-denied']); 
   return false;
 };

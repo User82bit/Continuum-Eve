@@ -3,103 +3,73 @@
 
 main {
     display: flex;
-    height: 100%;
-    flex-direction: row;
+    min-height: 100vh;
+    min-height: 100dvh;
     align-items: center;
     justify-content: center;
+    padding: 24px;
+    background-color: $color-bg-primary;
+    background-image: url("/assets/png/background_loginPage.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 
-    section {
-        height: 100%;
+    @include lg {
+        justify-content: flex-end;
+        padding: 48px 8vw;
+    }
+
+    .form-section {
+        width: 100%;
+        max-width: 440px;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-    }
-
-    .main-section{
-        gap: 1dvh;
-        display: none;
-        flex-grow: 0;
-
-        @include lg {
-            display: flex;
-            flex-grow: 1;
-        }
-
-        background-color: $color-bg-surface;
-    }
-
-    .form-section{
-        padding: 0 5dvh;
-        flex-grow: 1;
-
-        @include lg {
-            flex-grow: 0.3;
-        }
-
-        img {
-            margin-bottom: 1dvh;
-        }
+        padding: 40px 36px;
+        border-radius: 16px;
+        background: rgba(16, 27, 20, 0.72);
+        backdrop-filter: blur(18px) saturate(120%);
+        -webkit-backdrop-filter: blur(18px) saturate(120%);
+        border: 1px solid $color-border;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
 
         h2 {
-            font-size: 2.8dvh;
+            font-size: 1.5rem;
             color: $color-text-primary;
-            margin-bottom: 3dvh;
+            margin-bottom: 2rem;
+            font-weight: 600;
         }
 
-        .btn-wrapper{
+        .btn-wrapper {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             width: 100%;
-            gap: 3dvh;
+            gap: 1rem;
 
-            .divider {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 2dvh;
-                width: 100%;
-                
-                font-size: 1.6dvh;
-                color: $color-lake;
-                font-weight: 400;
-                text-transform: uppercase;
-
-                div {
-                    flex-grow: 1;
-                    height: .2dvh;
-                    background-color: $color-lake;
-                }
-            }
-            
             button {
                 width: 100%;
-                padding: 1.2dvh 2.4dvh;
-                border-radius: 8px;
-                font-size: 1.6dvh;
+                padding: 12px 24px;
+                border-radius: 12px;
+                font-size: 1rem;
                 font-weight: 500;
-                border: none;
-                background-color: transparent;
                 cursor: pointer;
+                transition: all 0.2s ease;
 
-                &:disabled {
-                    opacity: 0.6;
-                }
-    
-                &.btnPrimary{
-                    background-color: $color-green-deep;
+                &.btnPrimary {
+                    background-color: $color-green-primary;
                     color: white;
-                    box-shadow: 0px .8dvh 1.2dvh rgba(45, 90, 39, 0.3);
-                }
-    
-                &.btnSecondary{
-                    border: .1dvh solid $color-green-deep;
-                    color: $color-green-deep;
+                    &:hover { background-color: $color-green-mid; }
                 }
 
-                transition: all 0.3s ease;
+                &.btnSecondary {
+                    background-color: $color-surface-elevated;
+                    border: 1px solid $color-border;
+                    color: $color-text-secondary;
+                    &:hover { border-color: $color-border-strong; }
+                }
             }
         }
     }

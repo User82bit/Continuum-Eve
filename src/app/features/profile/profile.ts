@@ -7,7 +7,7 @@ import { AuthService } from '../../core/services/auth.service'; // Ajuste o cami
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [RouterLink, TitleCasePipe, DatePipe, NavFloat],
+  imports: [TitleCasePipe, DatePipe, NavFloat],
   templateUrl: './profile.html',
   styleUrl: './profile.scss',
 })

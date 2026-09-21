@@ -1,73 +1,29 @@
-<section class="map-section" id="map-section">
-    <div class="display">
-        <div class="map-canvas">
-            <canvas id="map"></canvas>
-        </div>
-    </div>
-    <div class="side-bar">
-        <section class="primary-section">
-            <h1>Informacões extra do robo: <button (click)="return()">X</button></h1>
-        </section>
-        <section class="data-section">
-            <div class="auto-display">
-                <app-card>
-                    <form>
-                        <p>Nivel de bateria em: {{charge}}<b>{{batery}}</b></p>
-                    </form>
-                </app-card>
-                <app-card>
-                    <form>
-                        <span>Bateria DNV</span>
-                    </form>
-                </app-card>
-                <app-card>
-                    <form>
-                        <span>Bateria DNV</span>
-                    </form>
-                </app-card>
-            </div>
-            <app-card>
-                <form>
-                    <span>Bateria DNV</span>
-                </form>
-            </app-card>
-            <app-card>
-                <form>
-                    <span>Bateria DNV</span>
-                </form>
-            </app-card>
-            <app-card>
-                <form>
-                    <span>Bateria DNV</span>
-                </form>
-            </app-card>
-            <app-card>
-                <form>
-                    <span>Bateria DNV</span>
-                </form>
-            </app-card>
-            <app-card>
-                <form>
-                    <span>Bateria DNV</span>
-                </form>
-            </app-card>
-            <app-card>
-                <form>
-                    <span>Bateria DNV</span>
-                </form>
-            </app-card>
-            <app-card>
-                <form>
-                    <span>Bateria DNV</span>
-                </form>
-            </app-card>
-            <app-card>
-                <form>
-                    <span>Bateria DNV</span>
-                </form>
-            </app-card>
-        </section>
-    </div>
-    <div class="back-return" (click)="return()"></div>
-</section>
+<section class="map-section">
+    <aside class="side-bar">
+        <header class="primary-section">
+            <h1>Mapa de Monitoramento</h1>
+            <button class="close-btn" (click)="return()">✕</button>
+        </header>
 
+        <div class="data-section">
+            <app-card>
+                <div class="auto-display">
+                    <p>Status da Conexão:</p>
+                    <p><b>Online</b></p>
+                </div>
+            </app-card>
+            <app-card>
+                <div class="auto-display">
+                    <p>Coordenadas:</p>
+                    <p><b>0.0, 0.0</b></p>
+                </div>
+            </app-card>
+        </div>
+    </aside>
+
+    <main class="display">
+        <div class="map-canvas">
+            <canvas id="mapCanvas"></canvas>
+        </div>
+    </main>
+</section>
