@@ -92,6 +92,11 @@
   padding: clamp(1.4rem, 3.5vw, 3rem) 0 7.5rem;
 }
 
+@media (max-width: 767px) {
+  // Mantém o cabeçalho livre para a ilha flutuante no topo.
+  .app-shell { padding-top: 60px; }
+}
+
 @media (max-width: 480px) {
   .header-section {
     min-height: 80px;
