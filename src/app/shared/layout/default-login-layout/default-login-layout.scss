@@ -2,6 +2,8 @@
 
 :host { display: block; }
 
+.auth-image-panel { display: none; }
+
 .default-login-layout {
   position: relative;
   isolation: isolate;
@@ -152,4 +154,50 @@
 
 @media (max-width: 360px) {
   .form-section { padding: 1.15rem; }
+}
+
+
+/* Desktop and TV: side-by-side split screen (70% photo / 30% sign-in). */
+@media (min-width: 1025px) {
+  .default-login-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 3fr);
+    align-items: stretch;
+    justify-content: initial;
+    gap: 0;
+    min-height: 100dvh;
+    padding: 0;
+    background: $color-bg-primary;
+  }
+
+  .default-login-layout::before {
+    display: none;
+  }
+
+  .auth-image-panel {
+    display: block;
+    min-width: 0;
+    min-height: 100dvh;
+    background-color: $color-bg-secondary;
+    background-image:
+      linear-gradient(135deg, rgba(247, 247, 244, 0.05), rgba(32, 40, 35, 0.08)),
+      url('https://images.unsplash.com/photo-1598519190074-ee55af64f6a2?auto=format&fit=crop&w=2200&q=85');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+
+  .form-section {
+    width: 100%;
+    max-width: none;
+    min-height: 100dvh;
+    padding: clamp(1.25rem, 2.6vw, 3rem);
+    border: 0;
+    border-left: 1px solid $color-border;
+    border-radius: 0;
+    background: rgba(255, 255, 255, 0.97);
+    box-shadow: -14px 0 38px rgba(32, 40, 35, 0.045);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
 }
