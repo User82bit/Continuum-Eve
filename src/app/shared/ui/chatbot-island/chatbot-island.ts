@@ -2,7 +2,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs';
-import { ChatbotService } from '../../../core/services/chatbot.service';
+import {
+  ChatbotHistoryMessage,
+  ChatbotService,
+} from '../../../core/services/chatbot.service';
 
 type ChatRole = 'assistant' | 'user';
 
@@ -57,6 +60,7 @@ export class ChatbotIsland {
     const message = this.draft().trim();
     if (!message || this.isSending()) return;
 
+    const history = this.getCompletedHistory();
     this.messages.update((current) => [
       ...current,
       { id: this.nextMessageId++, role: 'user', content: message },
@@ -65,7 +69,7 @@ export class ChatbotIsland {
     this.isSending.set(true);
 
     this.chatbotService
-      .sendMessage(message)
+      .sendMessage(message, history)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         finalize(() => this.isSending.set(false)),
@@ -94,6 +98,31 @@ export class ChatbotIsland {
           ]);
         },
       });
+  }
+
+  private getCompletedHistory(): ChatbotHistoryMessage[] {
+    const transcript = this.messages().slice(1);
+    const completedTurns: ChatbotHistoryMessage[] = [];
+
+    for (let index = 0; index < transcript.length - 1; index++) {
+      const userMessage = transcript[index];
+      const assistantMessage = transcript[index + 1];
+
+      if (
+        userMessage.role === 'user' &&
+        assistantMessage.role === 'assistant' &&
+        !assistantMessage.isError
+      ) {
+        completedTurns.push(
+          { role: 'user', content: userMessage.content },
+          { role: 'assistant', content: assistantMessage.content },
+        );
+        index++;
+      }
+    }
+
+    // O modelo tem uma janela curta de tokens: envia apenas os dois turnos mais recentes.
+    return completedTurns.slice(-4);
   }
 
   private describeError(error: unknown): string {
