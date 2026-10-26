@@ -28,15 +28,45 @@ export class SessionService {
   }
 
   private loadFromStorage() {
-    this.tokenSignal.set(localStorage.getItem('auth-token'));
+    const token = localStorage.getItem('auth-token');
+    const storedEmail = localStorage.getItem('email');
+    const email = storedEmail || this.readEmailFromToken(token);
+
+    // Migra o e-mail para localStorage nas sessões antigas, quando o backend
+    // já o tinha incluído no JWT mas a resposta de login não foi persistida.
+    if (email && !storedEmail) {
+      localStorage.setItem('email', email);
+    }
+
+    this.tokenSignal.set(token);
     this.isAdminSignal.set(localStorage.getItem('isAdmin') === 'true');
     this.userSignal.set({
       username: localStorage.getItem('username') || null,
-      email: localStorage.getItem('email') || null,
+      email,
       userId: localStorage.getItem('userId') || null,
       imgUrl: localStorage.getItem('imgUrl') || null,
       createAt: localStorage.getItem('dateCreate') || null
     });
+  }
+
+  private readEmailFromToken(token: string | null): string | null {
+    if (!token) return null;
+
+    try {
+      const encodedPayload = token.split('.')[1];
+      if (!encodedPayload) return null;
+
+      const base64 = encodedPayload.replace(/-/g, '+').replace(/_/g, '/');
+      const padded = base64.padEnd(Math.ceil(base64.length / 4) * 4, '=');
+      const binary = atob(padded);
+      const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
+      const payload = JSON.parse(new TextDecoder().decode(bytes)) as Record<string, unknown>;
+      const email = payload['email'] ?? payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'];
+
+      return typeof email === 'string' && email.trim() ? email.trim() : null;
+    } catch {
+      return null;
+    }
   }
 
   get isAdmin() { return this.isAdminSignal(); }
