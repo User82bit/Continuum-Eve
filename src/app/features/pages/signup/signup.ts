@@ -1,8 +1,6 @@
-// src/app/features/pages/signup/signup.ts
-
-import { Component } from '@angular/core';
+import { AbstractControl, Component, ValidationErrors, ValidatorFn } from '@angular/core';
 import { DefaultLoginLayout } from '../../../shared/layout/default-login-layout/default-login-layout';
-import { FormGroup, ReactiveFormsModule, Validators, FormControl } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PrimaryInput } from '../../../shared/ui/primary-input/primary-input';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -15,6 +13,12 @@ interface SignupForm {
   passwordConfirme: FormControl<string | null>;
 }
 
+const matchingPasswords: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+  const password = control.get('password')?.value;
+  const confirmation = control.get('passwordConfirme')?.value;
+  return password && confirmation && password !== confirmation ? { passwordMismatch: true } : null;
+};
+
 @Component({
   selector: 'app-signup',
   standalone: true,
@@ -23,19 +27,19 @@ interface SignupForm {
   styleUrl: './signup.scss',
 })
 export class Signup {
-  SignupForm!: FormGroup<SignupForm>;
+  SignupForm: FormGroup<SignupForm>;
 
   constructor(
-    private router: Router,
-    private authService: AuthService,
-    private toastService: ToastrService,
+    private readonly router: Router,
+    private readonly authService: AuthService,
+    private readonly toastService: ToastrService,
   ) {
-    this.SignupForm = new FormGroup({
+    this.SignupForm = new FormGroup<SignupForm>({
       username: new FormControl('', [Validators.required, Validators.minLength(3)]),
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required, Validators.minLength(6)]),
       passwordConfirme: new FormControl('', [Validators.required, Validators.minLength(6)]),
-    });
+    }, { validators: matchingPasswords });
   }
 
   handleEnter(event: Event): void {
@@ -44,38 +48,34 @@ export class Signup {
     const currentIndex = inputs.indexOf(input);
 
     if (currentIndex < 0) return;
-
     event.preventDefault();
 
     if (currentIndex < inputs.length - 1) {
       inputs[currentIndex + 1].focus();
       return;
     }
-
     this.submit();
   }
 
-  submit() {
-    if (this.SignupForm.invalid) return;
-
-    const { username, email, password, passwordConfirme } = this.SignupForm.value;
-
-    // Valida se as senhas coincidem antes de enviar pro backend
-    if (password !== passwordConfirme) {
-      this.toastService.error('As senhas não coincidem.');
+  submit(): void {
+    if (this.SignupForm.invalid) {
+      if (this.SignupForm.hasError('passwordMismatch')) {
+        this.toastService.error('As senhas não coincidem.');
+      }
       return;
     }
 
-    this.authService.register(username!, email!, password!).subscribe({
+    const { username, email, password } = this.SignupForm.getRawValue();
+    if (!username || !email || !password) return;
+
+    this.authService.register(username, email, password).subscribe({
       next: (response) => {
-        this.toastService.success(`Conta criada! Bem-vindo, ${response.username}!`);
-        // Redireciona pro home após criar a conta
-        this.router.navigate(['/home']);
+        this.toastService.success('Conta criada! Bem-vindo, ' + response.username + '!');
+        void this.router.navigate(['/home']);
       },
-      error: (err) => {
-        // 409 = email já em uso
-        if (err.status === 409) {
-          this.toastService.error('Este email já está em uso.');
+      error: (error: { status?: number }) => {
+        if (error.status === 409) {
+          this.toastService.error('Este e-mail já está em uso.');
         } else {
           this.toastService.error('Erro ao criar conta. Tente novamente.');
         }
@@ -83,7 +83,7 @@ export class Signup {
     });
   }
 
-  navigate() {
-    this.router.navigate(['/login']);
+  navigate(): void {
+    void this.router.navigate(['/login']);
   }
 }

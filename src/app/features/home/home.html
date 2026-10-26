@@ -1,30 +1,83 @@
 <app-layout-main-interface>
-    <main class="main">
-        <header class="card-status-robot">
-            <div class="status-info">
-                <span [class]="'indicator-dot ' + status"></span>
-                <p>O robô está atualmente: <strong>{{status}}</strong></p>
-            </div>
-            <button class="details-btn">
-                Ver Detalhes <span>></span>
-            </button>
-        </header>
+  <section class="dashboard">
+    <header class="page-heading dashboard-heading">
+      <div>
+        <p class="page-eyebrow">CENTRAL DE MONITORAMENTO</p>
+        <h1>O Éden, em um só lugar.</h1>
+        <p>Acompanhe o estado do robô e os dados que o sistema já recebeu.</p>
+      </div>
+      <div class="status-pill" [class.online]="isOnline" aria-live="polite">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span>{{ status }}</span>
+      </div>
+    </header>
 
-        <section class="secondary">
-            <app-card>
-                <p>Nível de bateria: <b>{{batery}}%</b></p>
-            </app-card>
-            <app-card>
-                <p>Plantas plantadas: <b>{{TPlanted}}</b></p>
-                <p>Plantas plantadas hoje: <b>{{AcPlanted}}</b></p>
-            </app-card>
-            <app-card>
-                <p>Distância detectada: <b>{{ distance ?? '--' }}cm</b></p>
-            </app-card>
-        </section>
-    </main>
+    <section class="hero-panel" aria-label="Resumo do monitoramento">
+      <div class="hero-copy">
+        <span class="hero-kicker">PROJETO ÉDEN / 01</span>
+        <h2>Tecnologia que cresce junto com a natureza.</h2>
+        <p>Monitore os sinais recebidos pelo backend e acesse as ferramentas do sistema em uma interface única.</p>
+        <button type="button" class="details-btn" (click)="ToggleMap()">Abrir monitoramento <span aria-hidden="true">↗</span></button>
+      </div>
+      <div class="hero-caption"><span class="caption-mark" aria-hidden="true"></span><span>Visão geral do sistema</span></div>
+    </section>
+
+    <section class="metrics-section" aria-label="Telemetria do robô">
+      <div class="metrics-heading">
+        <div><p class="page-eyebrow">TELEMETRIA</p><h2>Indicadores do sistema</h2></div>
+        <span class="metrics-note">Os valores aparecem quando enviados pelo backend.</span>
+      </div>
+
+      <div class="metrics-grid">
+        <app-card>
+          <article class="metric-card">
+            <div class="metric-top"><span class="metric-symbol energy" aria-hidden="true">01</span><span class="metric-label">Bateria</span></div>
+            <strong class="metric-value">
+              @if (battery !== null) {
+                {{ battery }}<small>%</small>
+              } @else {
+                —
+              }
+            </strong>
+            <p>{{ battery !== null ? 'Última leitura recebida' : 'Aguardando leitura do sensor' }}</p>
+          </article>
+        </app-card>
+        <app-card>
+          <article class="metric-card">
+            <div class="metric-top"><span class="metric-symbol growth" aria-hidden="true">02</span><span class="metric-label">Plantas registradas</span></div>
+            <strong class="metric-value">{{ totalPlanted ?? '—' }}</strong>
+            <p>{{ totalPlanted !== null ? 'Total informado pelo sistema' : 'Aguardando dados de plantio' }}</p>
+          </article>
+        </app-card>
+        <app-card>
+          <article class="metric-card">
+            <div class="metric-top"><span class="metric-symbol sensor" aria-hidden="true">03</span><span class="metric-label">Distância detectada</span></div>
+            <strong class="metric-value">
+              @if (distance !== null) {
+                {{ distance }}<small>cm</small>
+              } @else {
+                —
+              }
+            </strong>
+            <p>{{ distance !== null ? 'Última leitura ultrassônica' : 'Aguardando leitura do sensor' }}</p>
+          </article>
+        </app-card>
+      </div>
+    </section>
+
+    <section class="dashboard-note">
+      <span class="note-icon" aria-hidden="true">i</span>
+      <p>Os indicadores não têm valores simulados: quando uma leitura ainda não foi recebida, ela permanece como indisponível.</p>
+    </section>
+  </section>
 </app-layout-main-interface>
 
 @if (isMapTrue) {
-    <app-map-info-component (isReturn)="ToggleMap()"/>
+  <app-map-info-component
+    [status]="status"
+    [isOnline]="isOnline"
+    [distance]="distance"
+    [battery]="battery"
+    (isReturn)="closeMap()"
+  />
 }

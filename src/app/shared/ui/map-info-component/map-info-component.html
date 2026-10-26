@@ -1,29 +1,56 @@
-<section class="map-section">
-    <aside class="side-bar">
-        <header class="primary-section">
-            <h1>Mapa de Monitoramento</h1>
-            <button class="close-btn" (click)="return()">✕</button>
-        </header>
+<section class="monitor-overlay" role="dialog" aria-modal="true" aria-labelledby="monitor-title">
+  <aside class="monitor-sidebar">
+    <header class="monitor-header">
+      <div>
+        <p class="page-eyebrow">PROJETO ÉDEN</p>
+        <h1 id="monitor-title">Monitoramento</h1>
+      </div>
+      <button class="close-btn" type="button" (click)="return()" aria-label="Fechar monitoramento">×</button>
+    </header>
 
-        <div class="data-section">
-            <app-card>
-                <div class="auto-display">
-                    <p>Status da Conexão:</p>
-                    <p><b>Online</b></p>
-                </div>
-            </app-card>
-            <app-card>
-                <div class="auto-display">
-                    <p>Coordenadas:</p>
-                    <p><b>0.0, 0.0</b></p>
-                </div>
-            </app-card>
-        </div>
-    </aside>
+    <div class="monitor-status" [class.online]="isOnline()" aria-live="polite">
+      <span class="status-dot"></span>
+      <div>
+        <strong>{{ isOnline() ? 'Sistema conectado' : 'Sem conexão confirmada' }}</strong>
+        <span>{{ status() }}</span>
+      </div>
+    </div>
 
-    <main class="display">
-        <div class="map-canvas">
-            <canvas id="mapCanvas"></canvas>
-        </div>
-    </main>
+    <section class="telemetry-list" aria-label="Leituras disponíveis">
+      <article class="telemetry-card">
+        <span class="telemetry-label">Distância ultrassônica</span>
+        <strong>{{ distance() !== null ? distance() + ' cm' : '—' }}</strong>
+        <span>{{ distance() !== null ? 'Última leitura recebida' : 'Aguardando sensor' }}</span>
+      </article>
+      <article class="telemetry-card">
+        <span class="telemetry-label">Bateria</span>
+        <strong>{{ battery() !== null ? battery() + '%' : '—' }}</strong>
+        <span>{{ battery() !== null ? 'Última leitura recebida' : 'Aguardando sensor' }}</span>
+      </article>
+    </section>
+
+    <p class="monitor-footnote">Somente os dados enviados pelo backend são exibidos. Coordenadas geográficas ainda não estão disponíveis nesta visualização.</p>
+  </aside>
+
+  <main class="monitor-main">
+    <div class="sensor-visual" aria-label="Visualização ilustrativa de sensores, não representa um mapa geográfico">
+      <div class="sensor-grid"></div>
+      <div class="sensor-ring sensor-ring-outer"></div>
+      <div class="sensor-ring sensor-ring-middle"></div>
+      <div class="sensor-ring sensor-ring-inner"></div>
+      <div class="sensor-center"><span>É</span></div>
+      <div class="sensor-line sensor-line-horizontal"></div>
+      <div class="sensor-line sensor-line-vertical"></div>
+      <div class="sensor-point sensor-point-one"></div>
+      <div class="sensor-point sensor-point-two"></div>
+      <div class="visual-caption">
+        <span>VISUALIZAÇÃO DE SENSORES</span>
+        <span>Sem coordenadas geográficas</span>
+      </div>
+    </div>
+    <div class="monitor-bottom-note">
+      <span class="note-icon" aria-hidden="true">i</span>
+      <p>Este painel mostra o estado da comunicação e as últimas leituras conhecidas. Um mapa real exigirá coordenadas fornecidas pelo robô ou pelo backend Ádan_Stella.</p>
+    </div>
+  </main>
 </section>

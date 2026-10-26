@@ -1,24 +1,47 @@
 <app-layout-main-interface>
-    <form class="main">
-        <app-card>
-            <form class="card-suggestion">
-                <h3>Entre em Contato</h3>
-                <p>Tem dúvidas ou sugestões sobre o PROJECT-EDEN? Envie sua mensagem abaixo.</p>
-                <p>Você já está autenticado como <strong>{{username}}</strong>.</p>
+  <section class="contact-page">
+    <header class="page-heading">
+      <div>
+        <p class="page-eyebrow">FALE COM A EQUIPE</p>
+        <h1>Vamos conversar.</h1>
+        <p>Compartilhe uma dúvida, sugestão ou observação sobre o Projeto Éden.</p>
+      </div>
+    </header>
 
-                <label for="mensagem">Mensagem:</label>
-                <textarea id="mensagem" [(ngModel)]="message" name="mensagem" placeholder="Escreva sua mensagem..."></textarea>
+    <div class="contact-grid">
+      <app-card>
+        <form class="card-suggestion" (ngSubmit)="SetMessageSuggestions()">
+          <p class="page-eyebrow">MENSAGEM</p>
+          <h2>Envie sua sugestão</h2>
+          <p>Você está autenticado como <strong>{{ username }}</strong>. A mensagem será preparada no aplicativo de e-mail do seu dispositivo.</p>
 
-                <button type="submit" (click)="SetMessageSuggestions()">Enviar Mensagem</button>
-            </form>
-        </app-card>
-        <app-card>
-            <form class="card-contact">
-                <h3>Outros canais</h3>
-                <p>Se preferir, contate a equipe de suporte diretamente através dos canais oficiais:</p>
-                <p><strong>Email:</strong> <button class="spoiler">contato@projecteden.com</button></p>
-                <p><strong>Telefone:</strong> <button class="spoiler">(11) 99999-9999</button></p>
-            </form>
-        </app-card>
-    </form>
+          <label for="mensagem">Sua mensagem</label>
+          <textarea id="mensagem" [(ngModel)]="message" name="mensagem" minlength="8" maxlength="4000" required
+            aria-describedby="message-hint" placeholder="Conte o que você gostaria de compartilhar..."></textarea>
+          <span id="message-hint" class="message-hint">{{ message.length }}/4000 caracteres · mínimo de 8</span>
+
+          <button type="submit" [disabled]="message.trim().length < 8">
+            Preparar e-mail <span aria-hidden="true">↗</span>
+          </button>
+        </form>
+      </app-card>
+
+      <app-card>
+        <section class="card-contact">
+          <p class="page-eyebrow">OUTROS CANAIS</p>
+          <h2>Contato de suporte</h2>
+          <p>O envio pelo formulário abre uma mensagem pronta para você revisar e enviar. Nenhum texto é armazenado pelo site.</p>
+          <a class="contact-channel" href="mailto:contato@projecteden.com">
+            <span class="channel-icon" aria-hidden="true">@</span>
+            <span><small>E-mail</small><strong>contato@projecteden.com</strong></span>
+            <span class="channel-arrow" aria-hidden="true">↗</span>
+          </a>
+          <div class="contact-note">
+            <span aria-hidden="true">i</span>
+            <p>Este canal depende de um aplicativo de e-mail configurado no seu dispositivo.</p>
+          </div>
+        </section>
+      </app-card>
+    </div>
+  </section>
 </app-layout-main-interface>

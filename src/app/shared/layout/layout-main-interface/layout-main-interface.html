@@ -1,12 +1,22 @@
-<main>
-    <section class="header-section">
-        <img class="logo-icon" src="assets/png/logoBg-main.png" alt="logo" width="120"/>
-        <button class="route-btn" routerLink="/profile"><img src="assets/svg/user-icon.svg" width="30"></button>
-    </section>
-    <div></div>
-    <section class="main-section">
-        <ng-content/>
-    </section>
-    <div></div>
-    <app-nav-float/>
+<main class="app-shell">
+  <header class="header-section">
+    <a class="brand-cluster" routerLink="/home" aria-label="Continuum-Eve — painel principal">
+      <img class="logo-icon" src="assets/png/logoBg-main.png" alt="" width="54" height="54" />
+      <span class="brand-copy">
+        <strong>CONTINUUM-EVE</strong>
+        <span>Ecossistema Éden</span>
+      </span>
+    </a>
+    <a class="account-link" routerLink="/profile" aria-label="Abrir perfil" title="Perfil">
+      <img src="assets/svg/user-icon.svg" width="22" height="22" alt="" />
+    </a>
+  </header>
+
+  <div class="layout-divider" aria-hidden="true"></div>
+
+  <section class="main-section">
+    <ng-content></ng-content>
+  </section>
+
+  <app-nav-float />
 </main>

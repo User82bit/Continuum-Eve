@@ -1,85 +1,280 @@
-@use "../../../../styles/_variables" as *;
-@use "../../../../styles/_breakpoints.scss" as *;
+@use 'styles/variables' as *;
 
-.map-section {
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 1000;
-    background: rgba(7, 16, 10, 0.8);
-    backdrop-filter: blur(12px);
+:host {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: block;
+}
 
-    @include lg {
-        flex-direction: row;
+.monitor-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: minmax(290px, 360px) minmax(0, 1fr);
+  overflow: auto;
+  background: rgba(4, 10, 6, 0.88);
+  backdrop-filter: blur(16px) saturate(110%);
+  -webkit-backdrop-filter: blur(16px) saturate(110%);
+}
+
+.monitor-sidebar {
+  z-index: 1;
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  padding: clamp(1.1rem, 3vw, 2rem);
+  border-right: 1px solid $color-border;
+  background: rgba(10, 21, 14, 0.94);
+}
+
+.monitor-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.4rem;
+
+  .page-eyebrow { margin-bottom: 0.4rem; }
+
+  h1 {
+    margin: 0;
+    color: $color-text-primary;
+    font-size: 1.65rem;
+    font-weight: 650;
+    letter-spacing: -0.045em;
+  }
+}
+
+.close-btn {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid $color-border;
+  border-radius: 13px;
+  color: $color-text-primary;
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 1.5rem;
+  line-height: 1;
+
+  &:hover {
+    border-color: $color-border-strong;
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.monitor-status {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.9rem;
+  border: 1px solid $color-border;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+
+  .status-dot {
+    width: 9px;
+    height: 9px;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background: $color-warning;
+  }
+
+  strong,
+  span:not(.status-dot) { display: block; }
+
+  strong {
+    color: $color-text-primary;
+    font-size: 0.88rem;
+  }
+
+  span:not(.status-dot) {
+    margin-top: 0.2rem;
+    color: $color-text-muted;
+    font-size: 0.77rem;
+  }
+
+  &.online {
+    border-color: rgba(114, 194, 123, 0.25);
+    .status-dot {
+      background: $color-success;
+      box-shadow: 0 0 0 4px rgba(85, 201, 120, 0.1);
     }
+  }
+}
 
-    .side-bar {
-        background: $color-surface;
-        border-right: 1px solid $color-border;
-        padding: 32px;
-        overflow-y: auto;
-        
-        @include lg {
-            width: 400px;
-            height: 100%;
-        }
+.telemetry-list {
+  display: grid;
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
 
-        .primary-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 32px;
+.telemetry-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1rem;
+  border: 1px solid $color-border;
+  border-radius: 16px;
+  background: linear-gradient(140deg, rgba(22, 38, 27, 0.78), rgba(11, 21, 15, 0.8));
 
-            h1 {
-                font-size: 1.5rem;
-                color: $color-text-primary;
-            }
+  .telemetry-label {
+    color: $color-text-secondary;
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
 
-            .close-btn {
-                background: $color-surface-elevated;
-                border: 1px solid $color-border;
-                color: $color-text-primary;
-                padding: 8px;
-                border-radius: 50%;
-                cursor: pointer;
-                transition: background 0.2s;
+  strong {
+    color: $color-text-primary;
+    font-size: 1.9rem;
+    font-weight: 650;
+    letter-spacing: -0.055em;
+  }
 
-                &:hover {
-                    background: $color-surface-hover;
-                }
-            }
-        }
+  span:last-child {
+    color: $color-text-muted;
+    font-size: 0.75rem;
+  }
+}
 
-        .data-section {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-    }
+.monitor-footnote {
+  margin: auto 0 0;
+  padding-top: 2rem;
+  color: $color-text-muted;
+  font-size: 0.78rem;
+  line-height: 1.7;
+}
 
-    .display {
-        flex-grow: 1;
-        padding: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+.monitor-main {
+  display: flex;
+  min-width: 0;
+  min-height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  padding: clamp(1rem, 3vw, 2.5rem);
+}
 
-        .map-canvas {
-            width: 100%;
-            height: 100%;
-            background: $color-bg-primary;
-            border: 1px solid $color-border;
-            border-radius: 16px;
-            overflow: hidden;
-            
-            canvas {
-                width: 100%;
-                height: 100%;
-            }
-        }
-    }
+.sensor-visual {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  min-height: min(66vh, 650px);
+  overflow: hidden;
+  place-items: center;
+  border: 1px solid $color-border;
+  border-radius: 24px;
+  background: radial-gradient(ellipse at 50% 48%, rgba(63, 143, 74, 0.13), transparent 42%), linear-gradient(145deg, rgba(15, 30, 20, 0.96), rgba(7, 16, 10, 0.95));
+}
+
+.sensor-grid {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background-image: linear-gradient(rgba(145, 180, 150, 0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(145, 180, 150, 0.045) 1px, transparent 1px);
+  background-size: 36px 36px;
+  mask-image: radial-gradient(ellipse, #000 20%, transparent 80%);
+}
+
+.sensor-ring {
+  position: absolute;
+  aspect-ratio: 1;
+  border: 1px solid rgba(114, 194, 123, 0.18);
+  border-radius: 50%;
+}
+
+.sensor-ring-outer { width: min(64vw, 500px); }
+.sensor-ring-middle { width: min(48vw, 370px); border-style: dashed; }
+.sensor-ring-inner { width: min(31vw, 230px); border-color: rgba(66, 174, 181, 0.24); }
+
+.sensor-center {
+  display: grid;
+  width: 74px;
+  height: 74px;
+  place-items: center;
+  border: 1px solid rgba(114, 194, 123, 0.35);
+  border-radius: 24px;
+  color: $color-green-light;
+  background: rgba(18, 43, 25, 0.92);
+  box-shadow: 0 0 0 12px rgba(63, 143, 74, 0.055), 0 0 70px rgba(63, 143, 74, 0.1);
+  font-size: 1.8rem;
+  font-weight: 750;
+}
+
+.sensor-line { position: absolute; background: rgba(114, 194, 123, 0.11); }
+.sensor-line-horizontal { width: 84%; height: 1px; }
+.sensor-line-vertical { width: 1px; height: 80%; }
+
+.sensor-point {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: $color-telemetry;
+  box-shadow: 0 0 0 6px rgba(66, 174, 181, 0.09), 0 0 22px rgba(66, 174, 181, 0.22);
+}
+.sensor-point-one { top: 31%; left: 29%; }
+.sensor-point-two { right: 25%; bottom: 29%; background: $color-green-light; }
+
+.visual-caption {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  left: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  color: $color-text-muted;
+  font-size: 0.72rem;
+
+  span:first-child {
+    color: $color-green-light;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+  }
+}
+
+.monitor-bottom-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid $color-border;
+  border-radius: 14px;
+  background: rgba(16, 27, 20, 0.4);
+
+  .note-icon {
+    display: grid;
+    width: 20px;
+    height: 20px;
+    flex: 0 0 auto;
+    place-items: center;
+    border: 1px solid $color-border-strong;
+    border-radius: 50%;
+    color: $color-green-light;
+    font-size: 0.7rem;
+    font-weight: 700;
+  }
+
+  p {
+    margin: 0;
+    color: $color-text-muted;
+    font-size: 0.78rem;
+    line-height: 1.6;
+  }
+}
+
+@media (max-width: 820px) {
+  .monitor-overlay { grid-template-columns: 1fr; align-content: start; }
+  .monitor-sidebar { min-height: auto; border-right: 0; border-bottom: 1px solid $color-border; }
+  .monitor-footnote { margin-top: 1rem; padding-top: 0; }
+  .monitor-main { min-height: auto; }
+  .sensor-visual { min-height: 360px; }
+  .sensor-ring-outer { width: min(72vw, 400px); }
+  .sensor-ring-middle { width: min(54vw, 300px); }
+  .sensor-ring-inner { width: min(35vw, 190px); }
 }

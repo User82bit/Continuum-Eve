@@ -1,76 +1,175 @@
-@use "../../../../styles/_breakpoints.scss" as *;
-@use "../../../../styles/_variables.scss" as *;
+@use 'styles/breakpoints' as *;
+@use 'styles/variables' as *;
+
+:host {
+  display: block;
+}
 
 .default-login-layout {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  min-height: 100dvh;
+  align-items: center;
+  justify-content: flex-end;
+  padding: clamp(1rem, 4vw, 4rem);
+  overflow: hidden;
+  background-color: $color-bg-primary;
+  background-image:
+    linear-gradient(90deg, rgba(5, 13, 8, 0.16) 0%, rgba(5, 13, 8, 0.56) 52%, rgba(5, 13, 8, 0.88) 100%),
+    url('/assets/png/background_loginPage.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  &::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    content: '';
+    background: radial-gradient(ellipse at 25% 45%, rgba(82, 150, 81, 0.12), transparent 42%);
+    pointer-events: none;
+  }
+}
+
+.form-section {
+  width: min(100%, 460px);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  padding: clamp(1.5rem, 4vw, 3rem);
+  border: 1px solid rgba(205, 232, 207, 0.16);
+  border-radius: 28px;
+  background: linear-gradient(145deg, rgba(14, 27, 18, 0.86), rgba(7, 16, 10, 0.78));
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(16px) saturate(115%);
+  -webkit-backdrop-filter: blur(16px) saturate(115%);
+
+  .brand-mark {
+    display: inline-flex;
+    align-self: center;
+    width: 76px;
+    height: 76px;
+    margin-bottom: 1.15rem;
+    border-radius: 22px;
+    overflow: hidden;
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+
+  .page-eyebrow {
+    margin-bottom: 0.55rem;
+    text-align: center;
+  }
+
+  h2 {
+    margin: 0;
+    color: $color-text-primary;
+    font-size: clamp(1.65rem, 3vw, 2rem);
+    font-weight: 650;
+    letter-spacing: -0.04em;
+    line-height: 1.15;
+    text-align: center;
+  }
+
+  .form-intro {
+    max-width: 25rem;
+    margin: 0.75rem auto 0;
+    color: $color-text-secondary;
+    font-size: 0.92rem;
+    line-height: 1.55;
+    text-align: center;
+  }
+
+  .btn-wrapper {
     display: flex;
-    min-height: 100dvh;
-    align-items: center;
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.8rem;
+    margin-top: 0.8rem;
+
+    button {
+      min-height: 48px;
+      width: 100%;
+      padding: 0.75rem 1.25rem;
+      border: 1px solid transparent;
+      border-radius: 14px;
+      font-size: 0.95rem;
+      font-weight: 650;
+      transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
+
+      &:not(:disabled):active {
+        transform: translateY(1px);
+      }
+    }
+
+    .btnPrimary {
+      color: #f8fff8;
+      background: linear-gradient(135deg, $color-green-primary, #4b9d56);
+      box-shadow: 0 8px 24px rgba(44, 116, 55, 0.2);
+
+      &:not(:disabled):hover {
+        background: $color-green-mid;
+      }
+    }
+
+    .btnSecondary {
+      color: $color-text-secondary;
+      background: rgba(255, 255, 255, 0.035);
+      border-color: $color-border;
+
+      &:hover {
+        color: $color-text-primary;
+        border-color: $color-border-strong;
+        background: rgba(255, 255, 255, 0.06);
+      }
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      color: $color-text-muted;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+
+      span:not(.divider-label) {
+        height: 1px;
+        flex: 1;
+        background: $color-border;
+      }
+    }
+  }
+}
+
+@media (max-width: 720px) {
+  .default-login-layout {
     justify-content: center;
-    padding: 24px;
-    background-color: $color-bg-primary;
-    background-image: url("/assets/png/background_loginPage.png");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    padding: 1rem;
+    background-position: 42% center;
+    background-image:
+      linear-gradient(180deg, rgba(5, 13, 8, 0.55), rgba(5, 13, 8, 0.82)),
+      url('/assets/png/background_loginPage.png');
+  }
 
-    @include lg {
-        justify-content: flex-end;
-        padding: 0px 5px;
-    }
+  .form-section {
+    width: min(100%, 460px);
+    padding: 1.5rem;
+    border-radius: 24px;
+  }
+}
 
-    .form-section {
-        width: 100%;
-        max-width: 44dvw;
-        min-height: 70dvh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 40px 36px;
-        border-radius: 16px;
-        background: rgba(16, 27, 20, 0.72);
-        backdrop-filter: blur(18px) saturate(120%);
-        -webkit-backdrop-filter: blur(18px) saturate(120%);
-        border: 1px solid $color-border;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
-
-        h2 {
-            font-size: 1.5rem;
-            color: $color-text-primary;
-            margin-bottom: 2rem;
-            font-weight: 600;
-        }
-
-        .btn-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            gap: 1rem;
-
-            button {
-                width: 100%;
-                padding: 12px 24px;
-                border-radius: 12px;
-                font-size: 1rem;
-                font-weight: 500;
-                cursor: pointer;
-                transition: all 0.2s ease;
-
-                &.btnPrimary {
-                    background-color: $color-green-primary;
-                    color: white;
-                    &:hover { background-color: $color-green-mid; }
-                }
-
-                &.btnSecondary {
-                    background-color: $color-surface-elevated;
-                    border: 1px solid $color-border;
-                    color: $color-text-secondary;
-                    &:hover { border-color: $color-border-strong; }
-                }
-            }
-        }
-    }
+@media (max-width: 360px) {
+  .form-section {
+    padding: 1.15rem;
+  }
 }

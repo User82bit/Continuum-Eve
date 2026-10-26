@@ -1,128 +1,157 @@
-@use '../../../styles/_variables' as *;
-@use '../../../styles/_breakpoints.scss' as *;
+@use 'styles/variables' as *;
 
-.main {
-    // Mantém o alinhamento centralizado e confortável idêntico às outras telas
-    padding: 40px 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 24px; // Espaçamento elegante entre os dois cards
-    width: 100%;
-    max-width: 1000px; // Reduzi levemente o max-width para o formulário não ficar esticado demais em telas gigantes
-    margin: 0 auto;
-
-    // Garante que todo app-card dentro do main ocupe 100% da largura disponível
-    app-card {
-        width: 100%;
-    }
-
-    h3 {
-        color: $color-green-deep;
-        font-size: 1.25rem;
-        margin-bottom: 8px;
-        font-weight: 600;
-    }
-
-    p {
-        color: $color-text-primary;
-        font-size: 0.95rem;
-        line-height: 1.6;
-        margin-bottom: 8px;
-
-        &:last-child {
-            margin-bottom: 0;
-        }
-        
-        strong {
-            color: $color-green-deep;
-            font-weight: 600;
-        }
-    }
+.contact-page {
+  display: flex;
+  max-width: 1160px;
+  flex-direction: column;
+  gap: 1.4rem;
+  margin: 0 auto;
 }
 
-.card-suggestion {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    width: 100%;
+.contact-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+  gap: 1rem;
 
-    label {
-        font-weight: 600;
-        color: $color-text-primary;
-        font-size: 0.9rem;
-    }
-
-    textarea {
-        width: 100%;
-        padding: 12px;
-        border: 1px solid $color-border; // Padrão fino do login
-        border-radius: 8px;
-        background-color: $color-bg-light-surface;
-        font-size: 1rem;
-        color: $color-text-primary;
-        outline: none;
-        transition: all 0.2s ease;
-        resize: none;
-        min-height: 150px;
-
-        &:focus {
-            border-color: $color-border-focus;
-            box-shadow: 0 0 0 3px rgba($color-green-mid, 0.15);
-            background-color: $color-bg-primary;
-        }
-
-        &::placeholder {
-            color: $color-text-placeholder;
-        }
-    }
-
-    button {
-        align-self: flex-end;
-        padding: 10px 24px;
-        border-radius: 8px;
-        border: none;
-        background-color: $color-green-deep;
-        color: $color-bg-primary;
-        font-weight: 600;
-        font-size: 0.95rem;
-        cursor: pointer;
-        transition: all 0.2s ease;
-
-        &:hover {
-            background-color: $color-green-mid;
-            transform: translateY(-1px);
-        }
-
-        &:active {
-            transform: translateY(0);
-        }
-    }
-    
+  app-card { min-width: 0; }
 }
 
-$spoiler-color: rgb(179, 187, 179);
-// Classe específica para o card inferior caso precise de algum ajuste único no futuro
+.card-suggestion,
 .card-contact {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1rem;
+  width: 100%;
+
+  .page-eyebrow { margin-bottom: -0.6rem; }
+
+  h2 {
+    margin: 0;
+    color: $color-text-primary;
+    font-size: 1.35rem;
+    font-weight: 650;
+    letter-spacing: -0.04em;
+  }
+
+  p:not(.page-eyebrow) {
+    margin: 0;
+    color: $color-text-secondary;
+    font-size: 0.9rem;
+    line-height: 1.7;
+
+    strong { color: $color-text-primary; font-weight: 650; }
+  }
+
+  label {
+    margin-bottom: -0.55rem;
+    color: $color-text-secondary;
+    font-size: 0.82rem;
+    font-weight: 650;
+  }
+
+  textarea {
     width: 100%;
+    min-height: 190px;
+    padding: 0.9rem 1rem;
+    border: 1px solid $color-border;
+    border-radius: 14px;
+    outline: none;
+    resize: vertical;
+    color: $color-text-primary;
+    background: rgba(3, 10, 5, 0.34);
+    font-size: 0.93rem;
+    line-height: 1.6;
+    transition: border-color 160ms ease, box-shadow 160ms ease;
 
-    
+    &:focus { border-color: rgba(114, 194, 123, 0.7); box-shadow: 0 0 0 3px rgba(63, 143, 74, 0.13); }
+    &::placeholder { color: $color-text-muted; }
+  }
 
-    .spoiler {
-      background-color: $spoiler-color;
-      color: $spoiler-color;
-      border-radius: 4px;
-      border: none;
-      padding: 2px 6px;
-      font-size: 0.95rem;
-      cursor: pointer;
-      margin-left: 8px;
+  .message-hint {
+    margin-top: -0.6rem;
+    color: $color-text-muted;
+    font-size: 0.73rem;
+    text-align: right;
+  }
 
-      &:focus {
-        color: $color-text-primary;
-        background-color: transparent;
-      }
-      transition: all 0.2s ease;
+  > button {
+    display: inline-flex;
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    align-self: flex-end;
+    padding: 0.7rem 1.1rem;
+    border: 1px solid rgba(225, 244, 225, 0.16);
+    border-radius: 13px;
+    color: #f8fff8;
+    background: $color-green-primary;
+    font-size: 0.88rem;
+    font-weight: 700;
+    transition: background-color 160ms ease, transform 160ms ease;
+
+    &:hover:not(:disabled) { background: $color-green-mid; transform: translateY(-1px); }
+  }
+}
+
+.card-contact {
+  min-height: 100%;
+
+  .contact-channel {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    margin-top: 0.3rem;
+    padding: 0.85rem;
+    border: 1px solid $color-border;
+    border-radius: 15px;
+    color: inherit;
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.025);
+    transition: border-color 160ms ease, background-color 160ms ease;
+
+    &:hover { border-color: $color-border-strong; background: rgba(255, 255, 255, 0.05); }
+
+    .channel-icon {
+      display: grid;
+      width: 40px;
+      height: 40px;
+      flex: 0 0 auto;
+      place-items: center;
+      border: 1px solid rgba(114, 194, 123, 0.22);
+      border-radius: 13px;
+      color: $color-green-light;
+      background: $color-accent-soft;
+      font-weight: 700;
     }
+
+    span:nth-child(2) {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      gap: 0.15rem;
+
+      small { color: $color-text-muted; font-size: 0.72rem; }
+      strong { overflow-wrap: anywhere; color: $color-text-primary; font-size: 0.83rem; }
+    }
+
+    .channel-arrow { margin-left: auto; color: $color-text-muted; }
+  }
+
+  .contact-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.55rem;
+    margin-top: auto;
+    padding-top: 0.9rem;
+    border-top: 1px solid $color-border;
+
+    span { color: $color-green-light; font-size: 0.75rem; font-weight: 750; }
+    p { color: $color-text-muted; font-size: 0.78rem; }
+  }
+}
+
+@media (max-width: 760px) {
+  .contact-grid { grid-template-columns: 1fr; }
 }

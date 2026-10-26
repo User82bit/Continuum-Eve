@@ -1,9 +1,10 @@
-@use "../../../../styles/_variables.scss" as *;
+@use 'styles/variables' as *;
 
-form {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin-bottom: 24px;
+:host { display: block; }
+
+.form-error {
+  margin: -0.4rem 0 0;
+  color: #ffaaaa;
+  font-size: 0.8rem;
+  line-height: 1.5;
 }

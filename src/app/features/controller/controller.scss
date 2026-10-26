@@ -1,114 +1,168 @@
-@use '../../../styles/variables' as *;
-@use '../../../styles/breakpoints' as *;
+@use 'styles/variables' as *;
 
-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    width: 100%;
-    margin-top: 32dvh;
+.controller-page {
+  display: flex;
+  max-width: 1120px;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin: 0 auto;
 }
 
-// ── Status badge ────────────────────────────────────────────────────────────
+.controller-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 0.6rem;
+
+  h1 {
+    margin: 0;
+    color: $color-text-primary;
+    font-size: clamp(1.9rem, 3.5vw, 2.9rem);
+    font-weight: 650;
+    letter-spacing: -0.055em;
+    line-height: 1.08;
+  }
+
+  p:not(.page-eyebrow) {
+    max-width: 580px;
+    margin: 0.8rem 0 0;
+    color: $color-text-secondary;
+    font-size: 0.96rem;
+    line-height: 1.65;
+  }
+}
+
+.glass-panel {
+  border: 1px solid $color-border;
+  border-radius: 24px;
+  background: linear-gradient(145deg, rgba(22, 38, 27, 0.88), rgba(11, 21, 15, 0.8));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 18px 50px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(12px) saturate(110%);
+  -webkit-backdrop-filter: blur(12px) saturate(110%);
+}
 
 .status-badge {
-  display: flex;
+  display: inline-flex;
+  flex: 0 0 auto;
   align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
+  gap: 0.65rem;
+  padding: 0.6rem 0.85rem;
+  border: 1px solid $color-border;
   border-radius: 999px;
-  border: 2px solid $color-border;
-  background-color: $color-bg-surface;
-  font-size: 14px;
   color: $color-text-secondary;
-  transition: all 0.3s ease;
+  background: rgba(16, 27, 20, 0.6);
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: $color-warning;
+  }
 
   &.connected {
-    border-color: $color-green-mid;
-    color: $color-green-mid;
+    color: $color-green-light;
+    border-color: rgba(114, 194, 123, 0.27);
+
+    .status-dot {
+      background: $color-success;
+      box-shadow: 0 0 0 4px rgba(85, 201, 120, 0.1);
+    }
   }
 }
-
-.status-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: $color-text-placeholder;
-  transition: background-color 0.3s ease;
-
-  .connected & {
-    background-color: $color-green-mid;
-    animation: pulse 2s infinite;
-  }
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.4; }
-}
-
-// ── Hint ────────────────────────────────────────────────────────────────────
-
-.hint {
-  font-size: 14px;
-  color: $color-text-placeholder;
-  text-align: center;
-  max-width: 260px;
-}
-
-// ── Controles virtuais ──────────────────────────────────────────────────────
 
 .virtual-controls {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 12px;
-  width: min(100%, 280px);
+  flex-direction: column;
+  padding: clamp(1.25rem, 4vw, 2.5rem);
 }
 
-.virtual-controls-title {
-  font-size: 13px;
+.section-heading {
+  display: flex;
+  width: 100%;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+
+  .page-eyebrow {
+    margin-bottom: 0.35rem;
+  }
+
+  h2 {
+    margin: 0;
+    color: $color-text-primary;
+    font-size: clamp(1.3rem, 2vw, 1.75rem);
+    font-weight: 650;
+    letter-spacing: -0.04em;
+  }
+}
+
+.virtual-tag {
+  padding: 0.4rem 0.65rem;
+  border: 1px solid $color-border;
+  border-radius: 999px;
+  color: $color-text-muted;
+  font-size: 0.72rem;
+}
+
+.hint {
+  max-width: 32rem;
+  margin: 0 0 1.5rem;
   color: $color-text-secondary;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  text-align: center;
 }
 
 .virtual-pad {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-areas:
-    '. forward .'
-    'left . right'
-    '. backward .';
-  gap: 8px;
-  width: 100%;
+  width: min(100%, 330px);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(74px, 1fr));
+  grid-template-areas: '. forward .' 'left center right' '. backward .';
+  gap: 0.65rem;
+  touch-action: none;
 }
 
 .virtual-button {
-  min-height: 48px;
-  padding: 10px 8px;
-  border: 1px solid $color-border;
-  border-radius: 8px;
-  background-color: $color-bg-surface;
+  display: flex;
+  min-width: 0;
+  min-height: 74px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.55rem 0.3rem;
+  border: 1px solid $color-border-strong;
+  border-radius: 18px;
   color: $color-text-primary;
-  font: inherit;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
+  background: rgba(255, 255, 255, 0.035);
+  font-size: 1.6rem;
+  font-weight: 650;
   touch-action: none;
   user-select: none;
-  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+  transition: background-color 120ms ease, border-color 120ms ease, transform 120ms ease;
+
+  span {
+    color: $color-text-secondary;
+    font-size: 0.72rem;
+    font-weight: 550;
+  }
 
   &:hover,
   &:focus-visible {
-    border-color: $color-green-mid;
-    background-color: $color-bg-primary;
+    border-color: rgba(114, 194, 123, 0.7);
+    background: rgba(63, 143, 74, 0.12);
   }
 
   &:active {
-    border-color: $color-green-mid;
-    background-color: $color-green-deep;
-    color: $color-bg-primary;
-    transform: scale(0.96);
+    border-color: $color-green-light;
+    background: rgba(63, 143, 74, 0.28);
+    transform: scale(0.97);
   }
 }
 
@@ -117,182 +171,185 @@ form {
 .virtual-button-right { grid-area: right; }
 .virtual-button-backward { grid-area: backward; }
 
-// ── HUD ─────────────────────────────────────────────────────────────────────
+.pad-center {
+  display: grid;
+  grid-area: center;
+  place-items: center;
+  border: 1px dashed $color-border;
+  border-radius: 18px;
+  color: $color-green-light;
+  background: rgba(63, 143, 74, 0.055);
+  font-size: 1.25rem;
+  font-weight: 750;
+}
 
 .hud {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
   width: 100%;
-
-  padding: 24px;
-  border-radius: 16px;
-  border: 2px solid $color-border;
-  background-color: $color-bg-surface;
-
-  // Desktop: cresce até ocupar bem a área central, sem ficar colado nas bordas
-  @include lg {
-    max-width: 800px;
-    width: 90%;
-    gap: 28px;
-    padding: 40px 56px;
-  }
-}
-
-// ── Direção textual ──────────────────────────────────────────────────────────
-
-.direction-label {
-  font-size: 22px;
-  font-weight: 600;
-  color: $color-text-primary;
-  letter-spacing: 0.5px;
-
-  @include lg {
-    font-size: 32px;
-  }
+  flex-direction: column;
+  gap: 1.6rem;
+  padding: clamp(1.2rem, 4vw, 2.5rem);
 }
 
 .gamepad-id {
-  font-size: 11px;
-  color: $color-text-placeholder;
-  text-align: center;
-  white-space: nowrap;
+  max-width: 40%;
   overflow: hidden;
+  color: $color-text-muted;
+  font-size: 0.76rem;
   text-overflow: ellipsis;
-  max-width: 100%;
-
-  @include lg {
-    font-size: 13px;
-  }
+  white-space: nowrap;
 }
 
-// ── Gauges (barras dos gatilhos) ────────────────────────────────────────────
-
 .gauge-group {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
   width: 100%;
 }
 
-.gauge {
+.gauge,
+.steer-group {
   display: flex;
+  min-width: 0;
   flex-direction: column;
-  gap: 6px;
+  gap: 0.65rem;
 }
 
-.gauge-label {
-  font-size: 12px;
-  color: $color-text-secondary;
+.gauge-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: $color-text-muted;
+  font-size: 0.75rem;
 
-  @include lg {
-    font-size: 14px;
+  .gauge-label {
+    color: $color-text-secondary;
+    font-weight: 600;
   }
 }
 
 .gauge-bar {
   width: 100%;
-  height: 12px;
-  border-radius: 999px;
-  background-color: $color-bg-primary;
-  border: 1px solid $color-border;
+  height: 11px;
   overflow: hidden;
+  border: 1px solid $color-border;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.22);
 
-  @include lg {
-    height: 18px;
-  }
-
-  &.reverse {
-    display: flex;
-    justify-content: flex-start;
-
-    .gauge-fill {
-      background-color: $color-surface;
-    }
+  &.reverse .gauge-fill {
+    background: linear-gradient(90deg, $color-telemetry, #78b7c0);
   }
 }
 
 .gauge-fill {
   height: 100%;
-  border-radius: 999px;
-  background-color: $color-green-mid;
-  transition: width 0.05s linear;
-}
-
-// ── Barra de direção (steering) ──────────────────────────────────────────────
-
-.steer-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  width: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, $color-green-deep, $color-green-light);
+  transition: width 70ms linear;
 }
 
 .steer-bar {
   position: relative;
-  width: 100%;
-  height: 18px;
-  border-radius: 999px;
-  background-color: $color-bg-primary;
+  height: 20px;
   border: 1px solid $color-border;
-
-  @include lg {
-    height: 24px;
-  }
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.22);
 }
 
 .steer-center {
   position: absolute;
-  left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%);
+  left: 50%;
   width: 2px;
-  height: 70%;
-  background-color: $color-border;
+  height: 60%;
   border-radius: 2px;
+  background: $color-text-muted;
+  transform: translate(-50%, -50%);
 }
 
 .steer-indicator {
   position: absolute;
   top: 50%;
-  transform: translate(-50%, -50%);
-  width: 16px;
-  height: 16px;
+  width: 15px;
+  height: 15px;
+  border: 2px solid $color-text-primary;
   border-radius: 50%;
-  background-color: $color-green-deep;
-  transition: left 0.05s linear;
-
-  @include lg {
-    width: 22px;
-    height: 22px;
-  }
+  background: $color-green-mid;
+  box-shadow: 0 0 0 4px rgba(63, 143, 74, 0.14);
+  transform: translate(-50%, -50%);
+  transition: left 70ms linear;
 }
 
 .steer-labels {
   display: flex;
   justify-content: space-between;
-  font-size: 10px;
-  color: $color-text-placeholder;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-
-  @include lg {
-    font-size: 12px;
-  }
+  color: $color-text-muted;
+  font-size: 0.7rem;
 }
-
-// ── Valores brutos ───────────────────────────────────────────────────────────
 
 .raw-values {
   display: flex;
-  gap: 24px;
-  font-size: 12px;
-  color: $color-text-placeholder;
-  font-family: monospace;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid $color-border;
+  color: $color-text-muted;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8rem;
 
-  @include lg {
-    font-size: 14px;
-    gap: 48px;
+  strong {
+    margin-left: 0.5rem;
+    color: $color-text-primary;
+    font-weight: 600;
+  }
+}
+
+.controller-empty {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: 3rem 1.25rem;
+  border: 1px dashed $color-border-strong;
+  border-radius: 24px;
+  background: rgba(16, 27, 20, 0.28);
+  text-align: center;
+
+  .empty-mark {
+    display: grid;
+    width: 52px;
+    height: 52px;
+    place-items: center;
+    margin-bottom: 1rem;
+    border: 1px solid $color-border;
+    border-radius: 16px;
+    color: $color-green-light;
+    background: $color-accent-soft;
+    font-size: 1.5rem;
+  }
+
+  h2 {
+    margin: 0;
+    color: $color-text-primary;
+    font-size: 1.2rem;
+  }
+
+  p {
+    max-width: 28rem;
+    margin: 0.6rem 0 0;
+    color: $color-text-secondary;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+}
+
+@media (max-width: 760px) {
+  .controller-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .gauge-group {
+    grid-template-columns: 1fr;
   }
 }

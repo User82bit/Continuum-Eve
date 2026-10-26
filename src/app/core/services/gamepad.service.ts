@@ -1,72 +1,69 @@
-import { Injectable, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { Subject, BehaviorSubject } from 'rxjs';
+import { Injectable, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { GamepadCommand } from '../models/gamepad-command.model';
-import { RobotService } from './robot.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class GamepadService implements OnDestroy {
+  private readonly platformId = inject(PLATFORM_ID);
 
-  // ─── Dependências Injetadas ────────────────────────────────────────────────
-  private platformId = inject(PLATFORM_ID);
-  private robotService = inject(RobotService);
-
-  // ─── Streams Públicos ──────────────────────────────────────────────────────
-  
-  // command$ emite a cada frame válido para os componentes Angular escutarem
   readonly command$ = new Subject<GamepadCommand>();
-
-  // connected$ guarda o estado atual de conexão do controle
   readonly connected$ = new BehaviorSubject<boolean>(false);
 
-  // ─── Estado Interno ────────────────────────────────────────────────────────
-  
-  // Índice do controle no array do navigator.getGamepads()
+  private active = false;
   private gamepadIndex = -1;
-
-  // ID do requestAnimationFrame para cancelamento no cleanup
   private animFrameId = 0;
-
-  // Timestamp do último comando enviado — usado no throttle de 50ms
   private lastSentTime = 0;
-
-  // Último comando emitido para detecção de mudanças de estado
   private lastCommand: GamepadCommand = { x: 0, y: 0, connected: false, gamepadId: '' };
+  private readonly throttleMs = 50;
+  private readonly deadzone = 0.12;
 
-  // ─── Thresholds de Tratamento do Analog ────────────────────────────────────
-  private readonly THROTTLE_MS = 50;
-  private readonly DEADZONE = 0.12;
+  private readonly onGamepadConnected = (event: GamepadEvent): void => {
+    if (!this.active) return;
+    this.gamepadIndex = event.gamepad.index;
+    this.connected$.next(true);
+    this.startPolling();
+  };
+
+  private readonly onGamepadDisconnected = (event: GamepadEvent): void => {
+    if (!this.active || event.gamepad.index !== this.gamepadIndex) return;
+    this.gamepadIndex = -1;
+    this.connected$.next(false);
+    this.stopPolling();
+    this.emitStop();
+  };
 
   constructor() {
     if (isPlatformBrowser(this.platformId)) {
-      this.registerBrowserEvents();
+      window.addEventListener('gamepadconnected', this.onGamepadConnected);
+      window.addEventListener('gamepaddisconnected', this.onGamepadDisconnected);
     }
   }
 
-  // ─── Eventos Globais da Gamepad API ───────────────────────────────────────
+  activate(): void {
+    if (!isPlatformBrowser(this.platformId) || this.active) return;
+    this.active = true;
 
-  private registerBrowserEvents(): void {
-    window.addEventListener('gamepadconnected', (e: GamepadEvent) => {
-      this.gamepadIndex = e.gamepad.index;
+    // Alguns navegadores só disparam gamepadconnected após um botão ser usado.
+    // Também inspecionamos os controles já conectados quando a tela é aberta.
+    const gamepads = navigator.getGamepads();
+    const existing = Array.from(gamepads).find((gamepad) => gamepad?.connected);
+    if (existing) {
+      this.gamepadIndex = existing.index;
       this.connected$.next(true);
       this.startPolling();
-    });
-
-    window.addEventListener('gamepaddisconnected', () => {
-      this.gamepadIndex = -1;
-      this.connected$.next(false);
-      this.stopPolling();
-
-      // Emite comando zerado localmente e para a API do robô
-      const stopCommand: GamepadCommand = { x: 0, y: 0, connected: false, gamepadId: '' };
-      this.command$.next(stopCommand);
-      this.robotService.sendCommand(stopCommand);
-    });
+    }
   }
 
-  // ─── Polling Loop (60 FPS / requestAnimationFrame) ─────────────────────────
+  deactivate(): void {
+    if (!this.active) return;
+    // Garante parada antes de a tela de controle deixar de ouvir os comandos.
+    this.emitStop();
+    this.active = false;
+    this.gamepadIndex = -1;
+    this.connected$.next(false);
+    this.stopPolling();
+  }
 
   private startPolling(): void {
     this.stopPolling();
@@ -74,74 +71,63 @@ export class GamepadService implements OnDestroy {
   }
 
   private stopPolling(): void {
-    if (this.animFrameId) {
+    if (this.animFrameId !== 0 && isPlatformBrowser(this.platformId)) {
       cancelAnimationFrame(this.animFrameId);
       this.animFrameId = 0;
     }
   }
 
-  private poll(): void {
-    const gamepads = navigator.getGamepads();
-    const gamepad = gamepads[this.gamepadIndex];
+  private poll = (): void => {
+    if (!isPlatformBrowser(this.platformId) || !this.active || this.gamepadIndex < 0) return;
+    const gamepad = navigator.getGamepads()[this.gamepadIndex];
 
-    if (gamepad) {
-      // axes[0] = Analógico esquerdo horizontal
-      const rawX = gamepad.axes[0] ?? 0;
-
-      // buttons[7] = Gatilho Direito (RT/R2) -> Aceleração Frente (+)
-      // buttons[6] = Gatilho Esquerdo (LT/L2) -> Aceleração Ré (-)
-      const rt = gamepad.buttons[7]?.value ?? 0;
-      const lt = gamepad.buttons[6]?.value ?? 0;
-      const rawY = rt - lt;
-
-      // Aplicação da deadzone
-      const x = this.applyDeadzone(rawX);
-      const y = this.applyDeadzone(rawY);
-
-      const now = performance.now();
-      const changed = x !== this.lastCommand.x || y !== this.lastCommand.y;
-      const throttleOk = (now - this.lastSentTime) >= this.THROTTLE_MS;
-
-      // Regra de Emissão:
-      // 1. Mudou de valor E passou o limite do throttle (50ms)
-      // 2. EXCEÇÃO: Parada total (x=0, y=0) enquanto o último estado era em movimento (garante parada imediata do robô)
-      const shouldSend = (changed && throttleOk) || (x === 0 && y === 0 && (this.lastCommand.x !== 0 || this.lastCommand.y !== 0));
-
-      if (shouldSend) {
-        const command: GamepadCommand = {
-          x,
-          y,
-          connected: true,
-          gamepadId: gamepad.id
-        };
-
-        // Emite internamente para a aplicação Angular
-        this.command$.next(command);
-        
-        // Envia para o RobotService enviar ao .NET
-        this.robotService.sendCommand(command);
-
-        this.lastCommand = command;
-        this.lastSentTime = now;
-      }
+    if (!gamepad) {
+      this.gamepadIndex = -1;
+      this.connected$.next(false);
+      this.emitStop();
+      this.animFrameId = 0;
+      return;
     }
 
-    this.animFrameId = requestAnimationFrame(() => this.poll());
-  }
+    const rawX = gamepad.axes[0] ?? 0;
+    const rawY = (gamepad.buttons[7]?.value ?? 0) - (gamepad.buttons[6]?.value ?? 0);
+    const x = this.applyDeadzone(rawX);
+    const y = this.applyDeadzone(rawY);
+    const now = performance.now();
+    const changed = x !== this.lastCommand.x || y !== this.lastCommand.y;
+    const throttlePassed = now - this.lastSentTime >= this.throttleMs;
+    const stopping = x === 0 && y === 0 && (this.lastCommand.x !== 0 || this.lastCommand.y !== 0);
 
-  // ─── Truncamento Suave por Deadzone ───────────────────────────────────────
+    if ((changed && throttlePassed) || stopping) {
+      const command: GamepadCommand = { x, y, connected: true, gamepadId: gamepad.id };
+      this.command$.next(command);
+      this.lastCommand = command;
+      this.lastSentTime = now;
+    }
+
+    this.animFrameId = requestAnimationFrame(this.poll);
+  };
+
+  private emitStop(): void {
+    const stopCommand: GamepadCommand = { x: 0, y: 0, connected: false, gamepadId: '' };
+    this.command$.next(stopCommand);
+    this.lastCommand = stopCommand;
+    this.lastSentTime = isPlatformBrowser(this.platformId) ? performance.now() : 0;
+  }
 
   private applyDeadzone(value: number): number {
-    if (Math.abs(value) < this.DEADZONE) return 0;
-
+    if (Math.abs(value) < this.deadzone) return 0;
     const sign = value > 0 ? 1 : -1;
-    return sign * (Math.abs(value) - this.DEADZONE) / (1 - this.DEADZONE);
+    return sign * ((Math.abs(value) - this.deadzone) / (1 - this.deadzone));
   }
 
-  // ─── Limpeza e Desalocação ────────────────────────────────────────────────
-
   ngOnDestroy(): void {
+    this.deactivate();
     this.stopPolling();
+    if (isPlatformBrowser(this.platformId)) {
+      window.removeEventListener('gamepadconnected', this.onGamepadConnected);
+      window.removeEventListener('gamepaddisconnected', this.onGamepadDisconnected);
+    }
     this.command$.complete();
     this.connected$.complete();
   }

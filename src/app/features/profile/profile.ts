@@ -1,35 +1,30 @@
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { Router, RouterLink } from "@angular/router";
-import { NavFloat } from '../../shared/ui/nav-float/nav-float';
-import { AuthService } from '../../core/services/auth.service'; // Ajuste o caminho se necessário
+import { Router } from '@angular/router';
+import { LayoutMainInterface } from '../../shared/layout/layout-main-interface/layout-main-interface';
+import { AuthService } from '../../core/services/auth.service';
+import { SessionService } from '../../core/services/session.service';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [TitleCasePipe, DatePipe, NavFloat],
+  imports: [TitleCasePipe, DatePipe, LayoutMainInterface],
   templateUrl: './profile.html',
   styleUrl: './profile.scss',
 })
 export class Profile {
-  // Injeção de dependência usando o recurso do Angular (inject)
-  private authService = inject(AuthService);
-  private router = inject(Router);
+  private readonly authService = inject(AuthService);
+  private readonly sessionService = inject(SessionService);
+  private readonly router = inject(Router);
 
-  username = localStorage.getItem('username') || 'Usuário';
-  isAdmin  = localStorage.getItem('isAdmin') === 'true';
-  
-  private dateStr = localStorage.getItem('dateCreate');
-  date: Date | null = this.dateStr ? new Date(this.dateStr) : null;
- 
-  badge = this.isAdmin ? 'Administrador' : 'Membro';
+  readonly username = this.sessionService.user.username || 'Usuário';
+  readonly email = this.sessionService.user.email || 'E-mail não informado';
+  readonly imgUrl = this.sessionService.user.imgUrl;
+  readonly isAdmin = this.sessionService.isAdmin;
+  readonly date = this.sessionService.user.createAt ? new Date(this.sessionService.user.createAt) : null;
 
-  // Função que será disparada ao clicar no botão
   onLogout(): void {
-    // 1. Limpa os dados de autenticação através do serviço que criamos
     this.authService.logout();
-
-    // 2. Redireciona o usuário para a tela de login imediatamente
-    this.router.navigate(['/login']);
+    void this.router.navigate(['/login']);
   }
 }
