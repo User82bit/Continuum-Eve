@@ -124,3 +124,64 @@ button:disabled {
     transition-duration: 0.01ms !important;
   }
 }
+
+
+/* Toasts need the library stylesheet plus explicit stacking and readable sizing. */
+.toast-container {
+  z-index: 12000 !important;
+
+  &.toast-top-right {
+    top: 1rem;
+    right: 1rem;
+  }
+
+  .ngx-toastr {
+    width: min(390px, calc(100vw - 2rem));
+    min-height: 76px;
+    padding: 1.1rem 1.25rem 1.1rem 56px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 16px;
+    box-shadow: 0 18px 45px rgba(20, 35, 27, 0.24);
+    font-family: 'DM Sans', 'Inter', sans-serif;
+    font-size: 0.96rem;
+    font-weight: 650;
+    line-height: 1.45;
+    opacity: 1;
+  }
+
+  .toast-error {
+    color: #ffffff;
+    background-color: #B23E44 !important;
+  }
+
+  .toast-success {
+    color: #ffffff;
+    background-color: #287D54 !important;
+  }
+
+  .toast-info {
+    color: #ffffff;
+    background-color: #276B78 !important;
+  }
+
+  .toast-warning {
+    color: #202823;
+    background-color: #F0DDAA !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .toast-container.toast-top-right {
+    top: max(0.75rem, env(safe-area-inset-top));
+    right: 0.75rem;
+    left: 0.75rem;
+  }
+
+  .toast-container .ngx-toastr {
+    width: auto;
+    min-height: 68px;
+    margin: 0 0 0.65rem;
+    padding: 1rem 1rem 1rem 52px;
+    font-size: 0.92rem;
+  }
+}
