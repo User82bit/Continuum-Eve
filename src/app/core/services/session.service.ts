@@ -31,11 +31,11 @@ export class SessionService {
     this.tokenSignal.set(localStorage.getItem('auth-token'));
     this.isAdminSignal.set(localStorage.getItem('isAdmin') === 'true');
     this.userSignal.set({
-      username: localStorage.getItem('username'),
-      email: localStorage.getItem('email'),
-      userId: localStorage.getItem('userId'),
-      imgUrl: localStorage.getItem('imgUrl'),
-      createAt: localStorage.getItem('dateCreate')
+      username: localStorage.getItem('username') || null,
+      email: localStorage.getItem('email') || null,
+      userId: localStorage.getItem('userId') || null,
+      imgUrl: localStorage.getItem('imgUrl') || null,
+      createAt: localStorage.getItem('dateCreate') || null
     });
   }
 
@@ -43,19 +43,44 @@ export class SessionService {
   get token() { return this.tokenSignal(); }
   get user() { return this.userSignal(); }
 
-  setSession(token: string, isAdmin: boolean, email: string, username: string, userId: string, imgUrl: string, createAt: string) {
+  setSession(token: string, isAdmin: boolean, email: string | null, username: string, userId: string, imgUrl: string | null, createAt: string | null) {
+    const normalizedEmail = email?.trim() || null;
+    const normalizedImage = imgUrl || null;
+    const normalizedUsername = username?.trim() || null;
+    const normalizedUserId = userId || null;
+    const normalizedCreatedAt = createAt || null;
+
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem('auth-token', token);
       localStorage.setItem('isAdmin', String(isAdmin));
-      localStorage.setItem('email', email);
-      localStorage.setItem('username', username);
-      localStorage.setItem('userId', userId);
-      localStorage.setItem('imgUrl', imgUrl);
-      localStorage.setItem('dateCreate', createAt);
+      if (normalizedEmail) localStorage.setItem('email', normalizedEmail);
+      else localStorage.removeItem('email');
+      if (normalizedUsername) localStorage.setItem('username', normalizedUsername);
+      else localStorage.removeItem('username');
+      if (normalizedUserId) localStorage.setItem('userId', normalizedUserId);
+      else localStorage.removeItem('userId');
+      if (normalizedImage) localStorage.setItem('imgUrl', normalizedImage);
+      else localStorage.removeItem('imgUrl');
+      if (normalizedCreatedAt) localStorage.setItem('dateCreate', normalizedCreatedAt);
+      else localStorage.removeItem('dateCreate');
     }
+
     this.tokenSignal.set(token);
     this.isAdminSignal.set(isAdmin);
-    this.userSignal.set({ username, email, userId, imgUrl, createAt });
+    this.userSignal.set({
+      username: normalizedUsername,
+      email: normalizedEmail,
+      userId: normalizedUserId,
+      imgUrl: normalizedImage,
+      createAt: normalizedCreatedAt
+    });
+  }
+
+  updateProfileImage(imgUrl: string): void {
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem('imgUrl', imgUrl);
+    }
+    this.userSignal.update(user => ({ ...user, imgUrl }));
   }
 
   clearSession() {
