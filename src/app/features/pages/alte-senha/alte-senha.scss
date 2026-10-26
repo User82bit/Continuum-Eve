@@ -11,17 +11,19 @@
   justify-content: center;
   padding: 1.25rem;
   overflow: hidden;
-  background: linear-gradient(145deg, rgba(4, 12, 7, 0.6), rgba(4, 12, 7, 0.92)), url('/assets/png/background_loginPage.png') center / cover no-repeat;
+  background:
+    linear-gradient(145deg, rgba(18, 38, 27, 0.12), rgba(18, 38, 27, 0.26)),
+    url('https://images.unsplash.com/photo-1598519190074-ee55af64f6a2?auto=format&fit=crop&w=1800&q=85') center / cover no-repeat;
 
   .form-box {
     width: min(100%, 480px);
     padding: clamp(1.4rem, 4vw, 2.5rem);
-    border: 1px solid $color-border-strong;
+    border: 1px solid rgba(255, 255, 255, 0.86);
     border-radius: 26px;
-    background: rgba(10, 21, 14, 0.86);
-    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.36);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 24px 70px rgba(24, 42, 31, 0.17);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
   }
 }
 
@@ -32,7 +34,6 @@
   > a { display: inline-block; }
   .logo { display: block; width: 78px; height: auto; margin: 0 auto 1.2rem; object-fit: contain; }
   .page-eyebrow { margin-bottom: 0.4rem; }
-
   h2 { margin: 0; color: $color-text-primary; font-size: 1.65rem; font-weight: 650; letter-spacing: -0.045em; }
   .subtitle { margin: 0.75rem 0 0; color: $color-text-secondary; font-size: 0.9rem; line-height: 1.6; }
 
@@ -43,7 +44,7 @@
     border: 1px solid $color-border;
     border-radius: 12px;
     color: $color-text-muted;
-    background: rgba(255, 255, 255, 0.025);
+    background: rgba(20, 125, 112, 0.035);
     font-size: 0.78rem;
     line-height: 1.6;
   }
@@ -56,45 +57,45 @@
   flex-direction: column;
   gap: 0.5rem;
 
-  label { color: $color-text-secondary; font-size: 0.82rem; font-weight: 650; }
+  label { color: $color-text-secondary; font-size: 0.84rem; font-weight: 650; }
 
   .input-wrapper {
     display: flex;
     min-width: 0;
     overflow: hidden;
     border: 1px solid $color-border;
-    border-radius: 12px;
-    background: rgba(3, 10, 5, 0.34);
+    border-radius: 13px;
+    background: rgba(255, 255, 255, 0.92);
     transition: border-color 160ms ease, box-shadow 160ms ease;
 
-    &:focus-within { border-color: rgba(114, 194, 123, 0.7); box-shadow: 0 0 0 3px rgba(63, 143, 74, 0.13); }
+    &:focus-within { border-color: rgba(20, 125, 112, 0.7); box-shadow: 0 0 0 3px rgba(20, 125, 112, 0.1); }
 
     input {
       flex: 1;
       min-width: 0;
-      min-height: 48px;
-      padding: 0.75rem 0.9rem;
+      min-height: 54px;
+      padding: 0.85rem 1rem;
       border: 0;
       outline: 0;
       color: $color-text-primary;
       background: transparent;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       &::placeholder { color: $color-text-muted; }
     }
 
     .icon-container {
       display: grid;
-      width: 48px;
+      width: 52px;
       flex: 0 0 auto;
       place-items: center;
       border-left: 1px solid $color-border;
-      color: $color-green-light;
-      background: rgba(63, 143, 74, 0.08);
+      color: $color-green-primary;
+      background: rgba(20, 125, 112, 0.055);
     }
   }
 }
 
-.form-error { margin: -0.4rem 0 0; color: #ffaaaa; font-size: 0.8rem; }
+.form-error { margin: -0.4rem 0 0; color: $color-danger; font-size: 0.82rem; }
 
 .password-form .form-actions {
   display: flex;
@@ -104,16 +105,16 @@
 
   button {
     width: 100%;
-    min-height: 48px;
-    padding: 0.75rem 1rem;
+    min-height: 54px;
+    padding: 0.85rem 1rem;
     border: 1px solid transparent;
-    border-radius: 13px;
-    font-size: 0.9rem;
+    border-radius: 14px;
+    font-size: 0.96rem;
     font-weight: 700;
     transition: background-color 160ms ease, border-color 160ms ease;
     &:disabled { cursor: not-allowed; opacity: 0.48; }
   }
 
-  .btn-submit { color: #f8fff8; background: $color-green-primary; &:hover:not(:disabled) { background: $color-green-mid; } }
-  .btn-cancel { color: $color-text-secondary; border-color: $color-border; background: rgba(255, 255, 255, 0.025); &:hover { background: rgba(255, 255, 255, 0.06); } }
+  .btn-submit { color: #ffffff; background: $color-green-primary; &:hover:not(:disabled) { background: $color-green-mid; } }
+  .btn-cancel { color: $color-text-secondary; border-color: $color-border-strong; background: rgba(255, 255, 255, 0.65); &:hover { background: #ffffff; } }
 }

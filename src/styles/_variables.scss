@@ -1,31 +1,32 @@
-$color-bg-primary: #07100A;
-$color-bg-secondary: #0B1510;
+// Minimal, warm-neutral palette with a restrained teal accent.
+$color-bg-primary: #F7F7F4;
+$color-bg-secondary: #EFF1ED;
 
-$color-surface: #101B14;
-$color-surface-hover: #15241A;
-$color-surface-elevated: #1A2B1F;
+$color-surface: #FFFFFF;
+$color-surface-hover: #F4F6F2;
+$color-surface-elevated: #E9EFEB;
 
-$color-green-deep: #1E4A2A;
-$color-green-primary: #3F8F4A;
-$color-green-mid: #55A85F;
-$color-green-light: #72C27B;
+$color-green-deep: #185A50;
+$color-green-primary: #147D70;
+$color-green-mid: #198B7D;
+$color-green-light: #1B756A;
 
-$color-text-primary: #F2F5F2;
-$color-text-secondary: #AAB7AC;
-$color-text-muted: #748177;
+$color-text-primary: #202823;
+$color-text-secondary: #525D56;
+$color-text-muted: #737D76;
 
-$color-border: rgba(145, 180, 150, 0.12);
-$color-border-strong: rgba(145, 180, 150, 0.20);
+$color-border: rgba(32, 40, 35, 0.10);
+$color-border-strong: rgba(32, 40, 35, 0.17);
 
-$color-accent-soft: rgba(63, 143, 74, 0.14);
+$color-accent-soft: rgba(20, 125, 112, 0.09);
 
-$color-telemetry: #42AEB5;
+$color-telemetry: #157A8A;
 
-$color-success: #55C978;
-$color-warning: #E2AF50;
-$color-danger: #E05A5A;
+$color-success: #287D54;
+$color-warning: #A26D13;
+$color-danger: #B23E44;
 
-// Compatibility/Legacy mappings to fix build errors
+// Compatibility mappings for legacy component styles.
 $color-bg-surface: $color-surface;
 $color-bg-light-surface: $color-surface-hover;
 $color-accent: $color-green-primary;

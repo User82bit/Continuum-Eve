@@ -1,9 +1,6 @@
-@use 'styles/breakpoints' as *;
 @use 'styles/variables' as *;
 
-:host {
-  display: block;
-}
+:host { display: block; }
 
 .default-login-layout {
   position: relative;
@@ -16,8 +13,8 @@
   overflow: hidden;
   background-color: $color-bg-primary;
   background-image:
-    linear-gradient(90deg, rgba(5, 13, 8, 0.16) 0%, rgba(5, 13, 8, 0.56) 52%, rgba(5, 13, 8, 0.88) 100%),
-    url('/assets/png/background_loginPage.png');
+    linear-gradient(90deg, rgba(16, 33, 24, 0.08) 0%, rgba(16, 33, 24, 0.20) 46%, rgba(16, 33, 24, 0.38) 100%),
+    url('https://images.unsplash.com/photo-1598519190074-ee55af64f6a2?auto=format&fit=crop&w=2200&q=85');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -27,25 +24,25 @@
     z-index: -1;
     inset: 0;
     content: '';
-    background: radial-gradient(ellipse at 25% 45%, rgba(82, 150, 81, 0.12), transparent 42%);
+    background: linear-gradient(0deg, rgba(12, 31, 22, 0.10), transparent 50%);
     pointer-events: none;
   }
 }
 
 .form-section {
+  display: flex;
   width: min(100%, 460px);
   min-width: 0;
-  display: flex;
   flex-direction: column;
   align-items: stretch;
   justify-content: center;
   padding: clamp(1.5rem, 4vw, 3rem);
-  border: 1px solid rgba(205, 232, 207, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.82);
   border-radius: 28px;
-  background: linear-gradient(145deg, rgba(14, 27, 18, 0.86), rgba(7, 16, 10, 0.78));
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(16px) saturate(115%);
-  -webkit-backdrop-filter: blur(16px) saturate(115%);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 24px 70px rgba(24, 42, 31, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px) saturate(115%);
+  -webkit-backdrop-filter: blur(20px) saturate(115%);
 
   .brand-mark {
     display: inline-flex;
@@ -56,18 +53,10 @@
     border-radius: 22px;
     overflow: hidden;
 
-    img {
-      display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
+    img { display: block; width: 100%; height: 100%; object-fit: contain; }
   }
 
-  .page-eyebrow {
-    margin-bottom: 0.55rem;
-    text-align: center;
-  }
+  .page-eyebrow { margin-bottom: 0.55rem; text-align: center; }
 
   h2 {
     margin: 0;
@@ -93,43 +82,39 @@
     width: 100%;
     flex-direction: column;
     align-items: stretch;
-    gap: 0.8rem;
+    gap: 0.85rem;
     margin-top: 0.8rem;
 
     button {
-      min-height: 48px;
       width: 100%;
-      padding: 0.75rem 1.25rem;
+      min-height: 54px;
+      padding: 0.85rem 1.25rem;
       border: 1px solid transparent;
-      border-radius: 14px;
-      font-size: 0.95rem;
+      border-radius: 15px;
+      font-size: 0.98rem;
       font-weight: 650;
       transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
 
-      &:not(:disabled):active {
-        transform: translateY(1px);
-      }
+      &:not(:disabled):active { transform: translateY(1px); }
     }
 
     .btnPrimary {
-      color: #f8fff8;
-      background: linear-gradient(135deg, $color-green-primary, #4b9d56);
-      box-shadow: 0 8px 24px rgba(44, 116, 55, 0.2);
+      color: #ffffff;
+      background: $color-green-primary;
+      box-shadow: 0 6px 18px rgba(20, 125, 112, 0.17);
 
-      &:not(:disabled):hover {
-        background: $color-green-mid;
-      }
+      &:not(:disabled):hover { background: $color-green-mid; }
     }
 
     .btnSecondary {
       color: $color-text-secondary;
-      background: rgba(255, 255, 255, 0.035);
-      border-color: $color-border;
+      background: rgba(255, 255, 255, 0.72);
+      border-color: $color-border-strong;
 
       &:hover {
         color: $color-text-primary;
-        border-color: $color-border-strong;
-        background: rgba(255, 255, 255, 0.06);
+        border-color: rgba(20, 125, 112, 0.28);
+        background: #ffffff;
       }
     }
 
@@ -142,11 +127,7 @@
       text-transform: uppercase;
       letter-spacing: 0.1em;
 
-      span:not(.divider-label) {
-        height: 1px;
-        flex: 1;
-        background: $color-border;
-      }
+      span:not(.divider-label) { height: 1px; flex: 1; background: $color-border; }
     }
   }
 }
@@ -157,19 +138,18 @@
     padding: 1rem;
     background-position: 42% center;
     background-image:
-      linear-gradient(180deg, rgba(5, 13, 8, 0.55), rgba(5, 13, 8, 0.82)),
-      url('/assets/png/background_loginPage.png');
+      linear-gradient(180deg, rgba(16, 33, 24, 0.18), rgba(16, 33, 24, 0.3)),
+      url('https://images.unsplash.com/photo-1598519190074-ee55af64f6a2?auto=format&fit=crop&w=1400&q=80');
   }
 
   .form-section {
     width: min(100%, 460px);
     padding: 1.5rem;
     border-radius: 24px;
+    background: rgba(255, 255, 255, 0.94);
   }
 }
 
 @media (max-width: 360px) {
-  .form-section {
-    padding: 1.15rem;
-  }
+  .form-section { padding: 1.15rem; }
 }

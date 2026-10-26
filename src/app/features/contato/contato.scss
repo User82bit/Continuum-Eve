@@ -1,18 +1,11 @@
 @use 'styles/variables' as *;
 
-.contact-page {
-  display: flex;
-  max-width: 1160px;
-  flex-direction: column;
-  gap: 1.4rem;
-  margin: 0 auto;
-}
+.contact-page { display: flex; max-width: 1160px; flex-direction: column; gap: 1.4rem; margin: 0 auto; }
 
 .contact-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
   gap: 1rem;
-
   app-card { min-width: 0; }
 }
 
@@ -25,69 +18,51 @@
   width: 100%;
 
   .page-eyebrow { margin-bottom: -0.6rem; }
-
-  h2 {
-    margin: 0;
-    color: $color-text-primary;
-    font-size: 1.35rem;
-    font-weight: 650;
-    letter-spacing: -0.04em;
-  }
+  h2 { margin: 0; color: $color-text-primary; font-size: 1.35rem; font-weight: 650; letter-spacing: -0.04em; }
 
   p:not(.page-eyebrow) {
     margin: 0;
     color: $color-text-secondary;
-    font-size: 0.9rem;
+    font-size: 0.92rem;
     line-height: 1.7;
-
     strong { color: $color-text-primary; font-weight: 650; }
   }
 
-  label {
-    margin-bottom: -0.55rem;
-    color: $color-text-secondary;
-    font-size: 0.82rem;
-    font-weight: 650;
-  }
+  label { margin-bottom: -0.55rem; color: $color-text-secondary; font-size: 0.84rem; font-weight: 650; }
 
   textarea {
     width: 100%;
     min-height: 190px;
-    padding: 0.9rem 1rem;
+    padding: 1rem;
     border: 1px solid $color-border;
     border-radius: 14px;
     outline: none;
     resize: vertical;
     color: $color-text-primary;
-    background: rgba(3, 10, 5, 0.34);
-    font-size: 0.93rem;
+    background: #FFFFFF;
+    font-size: 0.96rem;
     line-height: 1.6;
     transition: border-color 160ms ease, box-shadow 160ms ease;
 
-    &:focus { border-color: rgba(114, 194, 123, 0.7); box-shadow: 0 0 0 3px rgba(63, 143, 74, 0.13); }
+    &:focus { border-color: rgba(20, 125, 112, 0.7); box-shadow: 0 0 0 3px rgba(20, 125, 112, 0.1); }
     &::placeholder { color: $color-text-muted; }
   }
 
-  .message-hint {
-    margin-top: -0.6rem;
-    color: $color-text-muted;
-    font-size: 0.73rem;
-    text-align: right;
-  }
+  .message-hint { margin-top: -0.6rem; color: $color-text-muted; font-size: 0.76rem; text-align: right; }
 
   > button {
     display: inline-flex;
-    min-height: 48px;
+    min-height: 54px;
     align-items: center;
     justify-content: center;
     gap: 1rem;
     align-self: flex-end;
-    padding: 0.7rem 1.1rem;
-    border: 1px solid rgba(225, 244, 225, 0.16);
-    border-radius: 13px;
-    color: #f8fff8;
+    padding: 0.85rem 1.25rem;
+    border: 1px solid rgba(20, 125, 112, 0.13);
+    border-radius: 14px;
+    color: #ffffff;
     background: $color-green-primary;
-    font-size: 0.88rem;
+    font-size: 0.94rem;
     font-weight: 700;
     transition: background-color 160ms ease, transform 160ms ease;
 
@@ -100,40 +75,29 @@
 
   .contact-channel {
     display: flex;
+    min-height: 62px;
     align-items: center;
     gap: 0.85rem;
     margin-top: 0.3rem;
-    padding: 0.85rem;
+    padding: 0.9rem;
     border: 1px solid $color-border;
     border-radius: 15px;
     color: inherit;
     text-decoration: none;
-    background: rgba(255, 255, 255, 0.025);
+    background: rgba(20, 125, 112, 0.035);
     transition: border-color 160ms ease, background-color 160ms ease;
 
-    &:hover { border-color: $color-border-strong; background: rgba(255, 255, 255, 0.05); }
+    &:hover { border-color: rgba(20, 125, 112, 0.22); background: rgba(20, 125, 112, 0.06); }
 
-    .channel-icon {
-      display: grid;
-      width: 40px;
-      height: 40px;
-      flex: 0 0 auto;
-      place-items: center;
-      border: 1px solid rgba(114, 194, 123, 0.22);
-      border-radius: 13px;
-      color: $color-green-light;
-      background: $color-accent-soft;
-      font-weight: 700;
-    }
+    .channel-icon { display: grid; width: 44px; height: 44px; flex: 0 0 auto; place-items: center; border: 1px solid rgba(20, 125, 112, 0.17); border-radius: 14px; color: $color-green-primary; background: $color-accent-soft; font-size: 1.1rem; font-weight: 700; }
 
     span:nth-child(2) {
       display: flex;
       min-width: 0;
       flex-direction: column;
       gap: 0.15rem;
-
-      small { color: $color-text-muted; font-size: 0.72rem; }
-      strong { overflow-wrap: anywhere; color: $color-text-primary; font-size: 0.83rem; }
+      small { color: $color-text-muted; font-size: 0.75rem; }
+      strong { overflow-wrap: anywhere; color: $color-text-primary; font-size: 0.88rem; }
     }
 
     .channel-arrow { margin-left: auto; color: $color-text-muted; }
@@ -146,12 +110,9 @@
     margin-top: auto;
     padding-top: 0.9rem;
     border-top: 1px solid $color-border;
-
-    span { color: $color-green-light; font-size: 0.75rem; font-weight: 750; }
-    p { color: $color-text-muted; font-size: 0.78rem; }
+    span { color: $color-green-primary; font-size: 0.8rem; font-weight: 750; }
+    p { color: $color-text-muted; font-size: 0.8rem; }
   }
 }
 
-@media (max-width: 760px) {
-  .contact-grid { grid-template-columns: 1fr; }
-}
+@media (max-width: 760px) { .contact-grid { grid-template-columns: 1fr; } }

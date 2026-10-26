@@ -17,28 +17,28 @@
     align-items: center;
     gap: 0.65rem;
     max-width: 100%;
-    padding: 0.65rem 0.95rem;
+    padding: 0.75rem 1rem;
     border: 1px solid $color-border;
     border-radius: 999px;
     color: $color-text-secondary;
-    background: rgba(16, 27, 20, 0.55);
-    font-size: 0.82rem;
+    background: rgba(255, 255, 255, 0.84);
+    font-size: 0.86rem;
     font-weight: 600;
-    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 16px rgba(25, 42, 32, 0.035);
 
     .status-dot {
-      width: 8px;
-      height: 8px;
+      width: 9px;
+      height: 9px;
       flex: 0 0 auto;
       border-radius: 50%;
       background: $color-warning;
-      box-shadow: 0 0 0 4px rgba(226, 175, 80, 0.1);
+      box-shadow: 0 0 0 4px rgba(162, 109, 19, 0.09);
     }
 
     &.online {
-      color: $color-green-light;
-      border-color: rgba(114, 194, 123, 0.28);
-      .status-dot { background: $color-success; box-shadow: 0 0 0 4px rgba(85, 201, 120, 0.12); }
+      color: $color-green-deep;
+      border-color: rgba(20, 125, 112, 0.19);
+      .status-dot { background: $color-success; box-shadow: 0 0 0 4px rgba(40, 125, 84, 0.1); }
     }
   }
 }
@@ -51,20 +51,23 @@
   align-items: center;
   padding: clamp(1.8rem, 5vw, 4.3rem);
   overflow: hidden;
-  border: 1px solid rgba(202, 232, 205, 0.17);
+  border: 1px solid rgba(255, 255, 255, 0.36);
   border-radius: 30px;
-  background-color: #102318;
-  background-image: linear-gradient(90deg, rgba(5, 13, 8, 0.94) 0%, rgba(5, 13, 8, 0.77) 48%, rgba(5, 13, 8, 0.24) 100%), linear-gradient(0deg, rgba(5, 13, 8, 0.32), transparent 60%), url('/assets/png/background_loginPage.png');
+  background-color: #263d31;
+  background-image:
+    linear-gradient(90deg, rgba(13, 30, 21, 0.86) 0%, rgba(13, 30, 21, 0.69) 46%, rgba(13, 30, 21, 0.2) 100%),
+    linear-gradient(0deg, rgba(13, 30, 21, 0.25), transparent 60%),
+    url('https://images.unsplash.com/photo-1741159711595-fc0be867ed6c?auto=format&fit=crop&w=2200&q=85');
   background-position: center;
   background-size: cover;
-  box-shadow: 0 22px 64px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 18px 46px rgba(25, 42, 32, 0.12);
 
   &::before {
     position: absolute;
     z-index: -1;
     inset: 0;
     content: '';
-    background: radial-gradient(ellipse at 88% 18%, rgba(114, 194, 123, 0.22), transparent 42%);
+    background: radial-gradient(ellipse at 88% 18%, rgba(255, 255, 255, 0.12), transparent 42%);
     pointer-events: none;
   }
 
@@ -74,7 +77,7 @@
     .hero-kicker {
       display: inline-block;
       margin-bottom: 1rem;
-      color: $color-green-light;
+      color: #c4e4d6;
       font-size: 0.72rem;
       font-weight: 750;
       letter-spacing: 0.16em;
@@ -82,7 +85,7 @@
 
     h2 {
       margin: 0;
-      color: #f6fbf5;
+      color: #ffffff;
       font-size: clamp(2rem, 4.2vw, 3.55rem);
       font-weight: 650;
       letter-spacing: -0.06em;
@@ -93,7 +96,7 @@
     p {
       max-width: 33rem;
       margin: 1rem 0 1.6rem;
-      color: rgba(236, 246, 235, 0.78);
+      color: rgba(255, 255, 255, 0.85);
       font-size: clamp(0.93rem, 1.4vw, 1.04rem);
       line-height: 1.7;
     }
@@ -101,22 +104,22 @@
 
   .details-btn {
     display: inline-flex;
-    min-height: 48px;
+    min-height: 54px;
     align-items: center;
     justify-content: center;
     gap: 1.25rem;
-    padding: 0.8rem 1.15rem;
-    border: 1px solid rgba(225, 244, 225, 0.25);
-    border-radius: 14px;
-    color: #f8fff8;
-    background: rgba(63, 143, 74, 0.85);
+    padding: 0.9rem 1.3rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 15px;
+    color: #ffffff;
+    background: $color-green-primary;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
-    font-size: 0.9rem;
+    font-size: 0.96rem;
     font-weight: 700;
     transition: background-color 160ms ease, transform 160ms ease;
 
     span { font-size: 1.1rem; }
-    &:hover { background: $color-green-primary; transform: translateY(-1px); }
+    &:hover { background: $color-green-mid; transform: translateY(-1px); }
   }
 
   .hero-caption {
@@ -126,10 +129,10 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: rgba(245, 251, 244, 0.65);
+    color: rgba(255, 255, 255, 0.78);
     font-size: 0.72rem;
 
-    .caption-mark { width: 6px; height: 6px; border-radius: 50%; background: $color-green-light; }
+    .caption-mark { width: 7px; height: 7px; border-radius: 50%; background: #c4e4d6; }
   }
 }
 
@@ -143,7 +146,7 @@
 
   .page-eyebrow { margin-bottom: 0.3rem; }
   h2 { margin: 0; color: $color-text-primary; font-size: clamp(1.35rem, 2vw, 1.8rem); font-weight: 620; letter-spacing: -0.04em; }
-  .metrics-note { max-width: 23rem; color: $color-text-muted; font-size: 0.8rem; text-align: right; }
+  .metrics-note { max-width: 23rem; color: $color-text-muted; font-size: 0.82rem; text-align: right; }
 }
 
 .metrics-grid {
@@ -155,30 +158,30 @@
 
   .metric-card {
     display: flex;
-    min-height: 178px;
+    min-height: 184px;
     flex-direction: column;
     gap: 0.8rem;
 
     .metric-top { display: flex; align-items: center; gap: 0.7rem; }
     .metric-symbol {
       display: grid;
-      width: 34px;
-      height: 34px;
+      width: 36px;
+      height: 36px;
       flex: 0 0 auto;
       place-items: center;
       border: 1px solid $color-border;
-      border-radius: 11px;
-      background: rgba(255, 255, 255, 0.035);
+      border-radius: 12px;
+      background: rgba(20, 125, 112, 0.055);
       font-size: 0.67rem;
       font-weight: 750;
-      &.energy { color: #dfc378; }
-      &.growth { color: $color-green-light; }
+      &.energy { color: #8B671E; }
+      &.growth { color: $color-green-primary; }
       &.sensor { color: $color-telemetry; }
     }
-    .metric-label { color: $color-text-secondary; font-size: 0.86rem; font-weight: 600; }
+    .metric-label { color: $color-text-secondary; font-size: 0.9rem; font-weight: 600; }
     .metric-value { color: $color-text-primary; font-size: clamp(2rem, 3vw, 2.8rem); font-weight: 650; letter-spacing: -0.06em; line-height: 1.1; }
     .metric-value small { margin-left: 0.2rem; color: $color-text-secondary; font-size: 0.95rem; font-weight: 550; letter-spacing: 0; }
-    p { margin-top: auto; color: $color-text-muted; font-size: 0.8rem; }
+    p { margin-top: auto; color: $color-text-muted; font-size: 0.82rem; }
   }
 }
 
@@ -189,10 +192,10 @@
   padding: 1rem 1.1rem;
   border: 1px solid $color-border;
   border-radius: 16px;
-  background: rgba(16, 27, 20, 0.35);
+  background: rgba(255, 255, 255, 0.68);
 
-  .note-icon { display: grid; width: 22px; height: 22px; flex: 0 0 auto; place-items: center; border: 1px solid $color-border-strong; border-radius: 50%; color: $color-green-light; font-size: 0.75rem; font-weight: 700; }
-  p { margin: 0; color: $color-text-muted; font-size: 0.82rem; line-height: 1.65; }
+  .note-icon { display: grid; width: 23px; height: 23px; flex: 0 0 auto; place-items: center; border: 1px solid rgba(20, 125, 112, 0.2); border-radius: 50%; color: $color-green-primary; font-size: 0.75rem; font-weight: 700; }
+  p { margin: 0; color: $color-text-muted; font-size: 0.84rem; line-height: 1.65; }
 }
 
 @media (max-width: 900px) {
@@ -206,7 +209,10 @@
     padding: 2rem 1.4rem;
     border-radius: 24px;
     background-position: 58% center;
-    background-image: linear-gradient(90deg, rgba(5, 13, 8, 0.91), rgba(5, 13, 8, 0.56)), linear-gradient(0deg, rgba(5, 13, 8, 0.38), transparent 80%), url('/assets/png/background_loginPage.png');
+    background-image:
+      linear-gradient(90deg, rgba(13, 30, 21, 0.88), rgba(13, 30, 21, 0.46)),
+      linear-gradient(0deg, rgba(13, 30, 21, 0.3), transparent 80%),
+      url('https://images.unsplash.com/photo-1741159711595-fc0be867ed6c?auto=format&fit=crop&w=1400&q=80');
     .hero-caption { right: 1rem; bottom: 1rem; }
   }
 

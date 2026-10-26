@@ -2,20 +2,15 @@
 
 .route-clear {
   align-self: flex-end;
+  min-height: 44px;
   margin-top: -0.45rem;
-  padding: 0.25rem 0;
-  color: $color-green-light;
-  font-size: 0.84rem;
+  padding: 0.45rem 0.1rem;
+  color: $color-green-primary;
+  font-size: 0.88rem;
+  font-weight: 600;
   text-align: right;
   transition: color 160ms ease;
 
-  &:hover:not(:disabled) {
-    color: $color-text-primary;
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
-  }
-
-  &:disabled {
-    color: $color-text-muted;
-  }
+  &:hover:not(:disabled) { color: $color-green-deep; text-decoration: underline; text-underline-offset: 0.2em; }
+  &:disabled { color: $color-text-muted; }
 }
