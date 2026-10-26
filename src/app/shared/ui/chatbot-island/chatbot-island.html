@@ -1,0 +1,84 @@
+<section class="island" [class.island-open]="isOpen()">
+  <button
+    class="island-trigger"
+    type="button"
+    (click)="toggle()"
+    [attr.aria-expanded]="isOpen()"
+    aria-controls="chatbot-conversation"
+    [attr.aria-label]="isOpen() ? 'Fechar conversa com o chatbot' : 'Conversar com o chatbot do Projeto Éden'"
+  >
+    <span class="island-mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M5 5.75A2.75 2.75 0 0 1 7.75 3h8.5A2.75 2.75 0 0 1 19 5.75v6.5A2.75 2.75 0 0 1 16.25 15H12l-4.5 3v-3h-.75A2.75 2.75 0 0 1 4 12.25v-6.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        <path d="M8 8h8M8 11h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+      </svg>
+    </span>
+    <span class="island-copy">
+      <span class="island-title">Éden IA</span>
+      <span class="island-subtitle">{{ isOpen() ? 'Conversa aberta' : 'Conversar com o chatbot' }}</span>
+    </span>
+    <span class="island-indicator" [class.indicator-active]="isOpen()" aria-hidden="true"></span>
+    <span class="island-chevron" [class.chevron-open]="isOpen()" aria-hidden="true">
+      <svg viewBox="0 0 16 16" fill="none">
+        <path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+  </button>
+
+  @if (isOpen()) {
+    <div class="chat-panel" id="chatbot-conversation">
+      <header class="chat-header">
+        <div class="chat-heading">
+          <span class="chat-kicker">PROJETO ÉDEN</span>
+          <h2>Conversar com a IA</h2>
+        </div>
+        <button class="close-button" type="button" (click)="close()" aria-label="Fechar conversa">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </header>
+
+      <div class="message-list" role="log" aria-live="polite" aria-relevant="additions text" aria-label="Mensagens da conversa">
+        @for (message of messages(); track message.id) {
+          <article class="message" [class.message-user]="message.role === 'user'" [class.message-error]="message.isError">
+            @if (message.role === 'assistant') {
+              <span class="message-avatar" aria-hidden="true">E</span>
+            }
+            <p>{{ message.content }}</p>
+          </article>
+        }
+        @if (isSending()) {
+          <div class="typing-indicator" role="status" aria-label="O chatbot está respondendo">
+            <span></span><span></span><span></span>
+          </div>
+        }
+      </div>
+
+      <form class="composer" (submit)="onSubmit($event)">
+        <label class="sr-only" for="chatbot-message">Sua mensagem</label>
+        <input
+          id="chatbot-message"
+          type="text"
+          [value]="draft()"
+          (input)="onDraftInput($event)"
+          [disabled]="isSending()"
+          maxlength="4000"
+          autocomplete="off"
+          placeholder="Escreva sua mensagem..."
+        />
+        <button class="send-button" type="submit" [disabled]="!canSend()" aria-label="Enviar mensagem">
+          @if (isSending()) {
+            <span class="send-spinner" aria-hidden="true"></span>
+          } @else {
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M3 10 16.5 3.5 12 17l-2.3-5.2L3 10Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="m9.7 11.8 3.5-3.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+          }
+        </button>
+      </form>
+      <p class="chat-footnote">As respostas são geradas pelo modelo do Adan-Stella.</p>
+    </div>
+  }
+</section>
