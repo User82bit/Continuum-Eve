@@ -1,125 +1,80 @@
 <app-layout-main-interface>
-    <form>
-        <!-- ── Status de conexão ─────────────────────────────────────────────── -->
-        <br>
-        <div class="status-badge" [class.connected]="isConnected()">
-          <span class="status-dot"></span>
-          <span class="status-text">
-            @if (isConnected()) {
-              Controle conectado
-            } @else {
-              Aguardando controle...
-            }
-          </span>
-        </div>
-      
-        <!-- ── Instrução quando não há controle ─────────────────────────────── -->
-        @if (!isConnected()) {
-          <p class="hint">
-            Conecte um controle e pressione qualquer botão para ativar.
-          </p>
+  <section class="controller-page">
+    <header class="controller-heading">
+      <div>
+        <p class="page-eyebrow">ACESSO ADMINISTRATIVO</p>
+        <h1>Controle do robô</h1>
+        <p>Use um controle compatível ou os comandos virtuais. Solte os botões para enviar uma ordem de parada.</p>
+      </div>
+      <div class="status-badge" [class.connected]="isConnected()" aria-live="polite">
+        <span class="status-dot"></span>
+        {{ isConnected() ? 'Controle conectado' : 'Controle desconectado' }}
+      </div>
+    </header>
 
-          <div class="virtual-controls" aria-label="Controles virtuais">
-            <span class="virtual-controls-title">Ou controle pela tela</span>
-            <div class="virtual-pad">
-              <button
-                type="button"
-                class="virtual-button virtual-button-forward"
-                aria-label="Mover para frente"
-                (pointerdown)="sendVirtualCommand(0, 1)"
-                (pointerup)="stopVirtualCommand()"
-                (pointerleave)="stopVirtualCommand()"
-                (pointercancel)="stopVirtualCommand()"
-              >Frente</button>
-              <button
-                type="button"
-                class="virtual-button virtual-button-left"
-                aria-label="Virar para a esquerda"
-                (pointerdown)="sendVirtualCommand(-1, 0)"
-                (pointerup)="stopVirtualCommand()"
-                (pointerleave)="stopVirtualCommand()"
-                (pointercancel)="stopVirtualCommand()"
-              >Esquerda</button>
-              <button
-                type="button"
-                class="virtual-button virtual-button-right"
-                aria-label="Virar para a direita"
-                (pointerdown)="sendVirtualCommand(1, 0)"
-                (pointerup)="stopVirtualCommand()"
-                (pointerleave)="stopVirtualCommand()"
-                (pointercancel)="stopVirtualCommand()"
-              >Direita</button>
-              <button
-                type="button"
-                class="virtual-button virtual-button-backward"
-                aria-label="Mover para ré"
-                (pointerdown)="sendVirtualCommand(0, -1)"
-                (pointerup)="stopVirtualCommand()"
-                (pointerleave)="stopVirtualCommand()"
-                (pointercancel)="stopVirtualCommand()"
-              >Ré</button>
-            </div>
+    @if (!isConnected()) {
+      <section class="virtual-controls glass-panel" aria-label="Controles virtuais">
+        <div class="section-heading">
+          <div>
+            <p class="page-eyebrow">MODO MANUAL</p>
+            <h2>Controle pela tela</h2>
           </div>
-        }
-      
-        <!-- ── HUD principal ─────────────────────────────────────────────── -->
-        @if (isConnected() || virtualActive()) {
-          <div class="hud">
-      
-            <!-- Direção textual -->
-            <div class="direction-label">{{ direction() }}</div>
-      
-            <!-- Nome do controle -->
-            <p class="gamepad-id">{{ currentCommand().gamepadId }}</p>
-      
-            <!-- Velocidade (gatilhos) -->
-            <div class="gauge-group">
-              <div class="gauge">
-                <span class="gauge-label">Ré (LT)</span>
-                <div class="gauge-bar reverse">
-                  <div
-                    class="gauge-fill"
-                    [style.width.%]="currentCommand().y < 0 ? toPercent(currentCommand().y) : 0"
-                  ></div>
-                </div>
-              </div>
-      
-              <div class="gauge">
-                <span class="gauge-label">Frente (RT)</span>
-                <div class="gauge-bar">
-                  <div
-                    class="gauge-fill"
-                    [style.width.%]="currentCommand().y > 0 ? toPercent(currentCommand().y) : 0"
-                  ></div>
-                </div>
-              </div>
-            </div>
-      
-            <!-- Direção (analógico esquerdo) -->
-            <div class="steer-group">
-              <span class="gauge-label">Direção (analógico esq.)</span>
-              <div class="steer-bar">
-                <!-- Linha central fixa -->
-                <div class="steer-center"></div>
-                <!-- Indicador se move para esquerda ou direita -->
-                <div
-                  class="steer-indicator"
-                  [style.left]="'calc(50% + ' + toOffsetPercent(currentCommand().x) + '% * 0.45)'"
-                ></div>
-              </div>
-              <div class="steer-labels">
-                <span>ESQ</span>
-                <span>DIR</span>
-              </div>
-            </div>
-      
-            <!-- Valores brutos — útil pra debug e calibragem -->
-            <div class="raw-values">
-              <span>X: {{ currentCommand().x | number: '1.2-2' }}</span>
-              <span>Y: {{ currentCommand().y | number: '1.2-2' }}</span>
-            </div>
-      
+          <span class="virtual-tag">Toque e segure</span>
+        </div>
+        <p class="hint">Pressione e segure uma direção para movimentar o robô. A ordem de parada é enviada ao soltar o botão.</p>
+        <div class="virtual-pad">
+          <button type="button" class="virtual-button virtual-button-forward" aria-label="Mover para frente"
+            (pointerdown)="sendVirtualCommand(0, 1)" (pointerup)="stopVirtualCommand()"
+            (pointerleave)="stopVirtualCommand()" (pointercancel)="stopVirtualCommand()">↑<span>Frente</span></button>
+          <button type="button" class="virtual-button virtual-button-left" aria-label="Virar para a esquerda"
+            (pointerdown)="sendVirtualCommand(-1, 0)" (pointerup)="stopVirtualCommand()"
+            (pointerleave)="stopVirtualCommand()" (pointercancel)="stopVirtualCommand()">←<span>Esquerda</span></button>
+          <div class="pad-center" aria-hidden="true"><span>É</span></div>
+          <button type="button" class="virtual-button virtual-button-right" aria-label="Virar para a direita"
+            (pointerdown)="sendVirtualCommand(1, 0)" (pointerup)="stopVirtualCommand()"
+            (pointerleave)="stopVirtualCommand()" (pointercancel)="stopVirtualCommand()">→<span>Direita</span></button>
+          <button type="button" class="virtual-button virtual-button-backward" aria-label="Mover para ré"
+            (pointerdown)="sendVirtualCommand(0, -1)" (pointerup)="stopVirtualCommand()"
+            (pointerleave)="stopVirtualCommand()" (pointercancel)="stopVirtualCommand()">↓<span>Ré</span></button>
+        </div>
+      </section>
+    }
+
+    @if (isConnected() || virtualActive()) {
+      <section class="hud glass-panel" aria-live="polite">
+        <div class="section-heading">
+          <div>
+            <p class="page-eyebrow">SINAL DE CONTROLE</p>
+            <h2>{{ direction() }}</h2>
           </div>
-        }
-    </form>
+          <span class="gamepad-id">{{ currentCommand().gamepadId || 'Sem controle ativo' }}</span>
+        </div>
+
+        <div class="gauge-group">
+          <div class="gauge">
+            <div class="gauge-heading"><span class="gauge-label">Ré · LT</span><span>{{ currentCommand().y < 0 ? toPercent(currentCommand().y) : 0 }}%</span></div>
+            <div class="gauge-bar reverse"><div class="gauge-fill" [style.width.%]="currentCommand().y < 0 ? toPercent(currentCommand().y) : 0"></div></div>
+          </div>
+          <div class="gauge">
+            <div class="gauge-heading"><span class="gauge-label">Frente · RT</span><span>{{ currentCommand().y > 0 ? toPercent(currentCommand().y) : 0 }}%</span></div>
+            <div class="gauge-bar"><div class="gauge-fill" [style.width.%]="currentCommand().y > 0 ? toPercent(currentCommand().y) : 0"></div></div>
+          </div>
+        </div>
+
+        <div class="steer-group">
+          <div class="gauge-heading"><span class="gauge-label">Direção do analógico</span><span>{{ currentCommand().x | number: '1.2-2' }}</span></div>
+          <div class="steer-bar">
+            <div class="steer-center"></div>
+            <div class="steer-indicator" [style.left.%]="50 + toOffsetPercent(currentCommand().x) * 0.45"></div>
+          </div>
+          <div class="steer-labels"><span>Esquerda</span><span>Centro</span><span>Direita</span></div>
+        </div>
+
+        <div class="raw-values">
+          <span>Eixo X <strong>{{ currentCommand().x | number: '1.2-2' }}</strong></span>
+          <span>Eixo Y <strong>{{ currentCommand().y | number: '1.2-2' }}</strong></span>
+        </div>
+      </section>
+    }
+  </section>
 </app-layout-main-interface>

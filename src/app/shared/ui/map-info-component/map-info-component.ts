@@ -1,18 +1,18 @@
-import { Component, output } from '@angular/core';
-import { Card } from "../card/card";
+import { Component, input, output } from '@angular/core';
 
 @Component({
   selector: 'app-map-info-component',
-  imports: [Card],
   templateUrl: './map-info-component.html',
   styleUrl: './map-info-component.scss',
 })
 export class MapInfoComponent {
-  batery = '98%';
-  charge = ''
-  isReturn = output<boolean>();
+  status = input('Aguardando telemetria');
+  isOnline = input(false);
+  distance = input<number | null>(null);
+  battery = input<number | null>(null);
+  isReturn = output<void>();
 
-  return(){
-    this.isReturn.emit(true);
+  return(): void {
+    this.isReturn.emit();
   }
 }

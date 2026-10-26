@@ -1,8 +1,16 @@
-<section class="btn-section">
-    <button class="route-btn" routerLink="/home" routerLinkActive="active"><img src="assets/svg/home.svg" width="40"></button>
-    <button class="route-btn" routerLink="/info" routerLinkActive="active"><img src="assets/svg/info.svg" width="40"></button>
-    <button class="route-btn" routerLink="/contact" routerLinkActive="active"><img src="assets/svg/headset.svg" width="40"></button>
-    @if (isAdmin()) {
-        <button class="route-btn" routerLink="/controller" routerLinkActive="active"><img src="assets/svg/remote-control.svg" width="40"></button>
-    }
-</section>
+<nav class="btn-section" aria-label="Navegação principal">
+  <a class="route-btn" routerLink="/home" routerLinkActive="active" ariaCurrentWhenActive="page" title="Painel" aria-label="Painel">
+    <img src="assets/svg/home.svg" width="24" height="24" alt="" />
+  </a>
+  <a class="route-btn" routerLink="/info" routerLinkActive="active" ariaCurrentWhenActive="page" title="Sobre o Éden" aria-label="Sobre o Éden">
+    <img src="assets/svg/info.svg" width="24" height="24" alt="" />
+  </a>
+  <a class="route-btn" routerLink="/contact" routerLinkActive="active" ariaCurrentWhenActive="page" title="Contato" aria-label="Contato">
+    <img src="assets/svg/headset.svg" width="24" height="24" alt="" />
+  </a>
+  @if (isAdmin()) {
+    <a class="route-btn" routerLink="/controller" routerLinkActive="active" ariaCurrentWhenActive="page" title="Controle do robô" aria-label="Controle do robô">
+      <img src="assets/svg/remote-control.svg" width="24" height="24" alt="" />
+    </a>
+  }
+</nav>

@@ -1,41 +1,73 @@
-@use "../../../../styles/_variables.scss" as *;
+@use 'styles/variables' as *;
+
+:host {
+  display: block;
+  width: 100%;
+}
 
 .input-wrapper {
-    color: $color-text-primary;
-    font-size: 16px;
-    text-align: start;
+  width: 100%;
+  color: $color-text-primary;
+  font-size: 0.9rem;
+  text-align: left;
 
-    label {
-        margin-bottom: 10px;
+  label {
+    display: block;
+    margin: 0 0 0.55rem;
+    color: $color-text-secondary;
+    font-size: 0.84rem;
+    font-weight: 650;
+  }
+
+  .input-content {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    align-items: stretch;
+    overflow: hidden;
+    border: 1px solid $color-border;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.95);
+    transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+
+    &:focus-within {
+      border-color: rgba(20, 125, 112, 0.72);
+      box-shadow: 0 0 0 3px rgba(20, 125, 112, 0.1);
     }
 
-    .input-content{
-        width: 100%;
-        border-radius: 8px;
-        display: flex;
-        
-        .icon {
-            padding: 12px;
-            border-radius: 0 8px 8px 0;
-            background-color: $color-green-deep;
+    &:has(input:disabled) { opacity: 0.58; }
 
-            img {
-                height: 20px;
-            }
-        }
-        
-        input {
-            border: 2px solid transparent;
-            border-radius: 8px 0 0 8px;
-            background-color: $color-bg-surface;
-            padding: 12px 0 12px 20px;
-            width: 100%;
-            color: $color-text-primary;
-            outline: none;
+    input {
+      display: block;
+      width: 100%;
+      min-width: 0;
+      min-height: 54px;
+      padding: 0.85rem 1rem;
+      border: 0;
+      outline: none;
+      color: $color-text-primary;
+      background: transparent;
+      font-size: 0.96rem;
 
-            &:focus {
-                border-color: $color-border-focus;
-            }
-        }
+      &::placeholder { color: $color-text-muted; opacity: 1; }
+      &:disabled { cursor: not-allowed; }
     }
+
+    .icon {
+      display: flex;
+      flex: 0 0 52px;
+      align-items: center;
+      justify-content: center;
+      border-left: 1px solid $color-border;
+      background: rgba(20, 125, 112, 0.055);
+
+      img {
+        display: block;
+        width: 20px;
+        height: 20px;
+        object-fit: contain;
+        opacity: 0.78;
+      }
+    }
+  }
 }

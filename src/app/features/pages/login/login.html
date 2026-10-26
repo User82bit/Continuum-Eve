@@ -1,34 +1,34 @@
 <app-default-login-layout
-  title="Bem-vindo de volta!"
-  primaryButtonText="Login Now"
-  secondaryButtonText="SignUp Now"
+  title="Bem-vindo de volta"
+  primaryButtonText="Entrar"
+  secondaryButtonText="Criar uma conta"
   (onSubmit)="submit()"
   (onNavigate)="navigate()"
-  [disablePrimaryButton]="!loginForm.valid"
+  [disablePrimaryButton]="loginForm.invalid"
 >
-  <form [formGroup]="loginForm" (keydown.enter)="handleEnter($event)">
+  <form class="auth-form" [formGroup]="loginForm" (keydown.enter)="handleEnter($event)">
     <app-primary-input
       formControlName="email"
       type="email"
       inputName="email"
-      label="Email"
-      placeHolder="exemplo2026@gmail.com"
+      autocomplete="email"
+      label="E-mail"
+      placeHolder="voce@exemplo.com"
     >
-      <img src="../../../../assets/svg/email-icon.svg" alt="" />
+      <img src="assets/svg/email-icon.svg" alt="" />
     </app-primary-input>
     <app-primary-input
       formControlName="password"
       type="password"
       inputName="password"
-      label="Password"
+      autocomplete="current-password"
+      label="Senha"
       placeHolder="Digite sua senha"
     >
-      <img src="../../../../assets/svg/password-icon.svg" alt="" />
+      <img src="assets/svg/password-icon.svg" alt="" />
     </app-primary-input>
-    <button class="route-clear" (click)="handleForgotPassword()" [disabled]="isDisabled">
+    <button type="button" class="route-clear" (click)="handleForgotPassword()" [disabled]="isDisabled">
       Esqueceu a senha?
     </button>
-    <a routerLink="/home">Ir para a tela Home</a>
   </form>
 </app-default-login-layout>
-<p></p>

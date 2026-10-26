@@ -1,55 +1,79 @@
 <app-layout-main-interface>
-    <form class="main">
-        <app-card>
-            <form>
-                <h3>Arduino</h3>
-                <p>O Arduino é uma plataforma de prototipagem eletrônica que facilita a criação de projetos interativos. Ele combina hardware e software simples, permitindo controlar sensores, motores e outros componentes.</p>
-            </form>
-        </app-card>
+  <section class="info-page">
+    <header class="info-hero">
+      <div class="info-copy">
+        <p class="page-eyebrow">CONHECIMENTO APLICADO</p>
+        <h1>O que faz o Éden funcionar?</h1>
+        <p>Uma visão simples das áreas que conectam robótica, sensores, engenharia e inteligência artificial.</p>
+      </div>
+      <div class="info-image" role="img" aria-label="Tecnologia e cultivo em um ambiente verde"></div>
+    </header>
 
-        <app-card>
-            <form>
-                <h3>Esteira Lagarta</h3>
-                <p>A esteira lagarta é usada em robôs para garantir mobilidade em terrenos irregulares. Ela distribui o peso e aumenta a tração, permitindo que o robô se mova com estabilidade.</p>
-            </form>
-        </app-card>
+    <div class="topic-grid">
+      <app-card>
+        <article class="topic-card">
+          <span class="topic-mark" aria-hidden="true">HW</span>
+          <div>
+            <h2>Eletrônica e Arduino</h2>
+            <p>Plataformas de prototipagem conectam sensores, motores e outros componentes por meio de entradas, saídas e firmware.</p>
+          </div>
+        </article>
+      </app-card>
 
-        <app-card>
-            <form>
-                <h3>Engenharia Mecânica</h3>
-                <p>A engenharia mecânica estuda forças, movimento e energia. Conceitos como torque <b>(T = F × r)</b>, engrenagens e transmissão de potência são fundamentais para calcular o desempenho de motores e sistemas mecânicos.</p>
-            </form>
-        </app-card>
+      <app-card>
+        <article class="topic-card">
+          <span class="topic-mark" aria-hidden="true">02</span>
+          <div>
+            <h2>Mobilidade e tração</h2>
+            <p>Rodas, esteiras, engrenagens e motores determinam como o robô se desloca, vence obstáculos e transforma energia em movimento.</p>
+          </div>
+        </article>
+      </app-card>
 
-        <app-card>
-            <form>
-                <h3>Engenharia Robótica</h3>
-                <p>Integra mecânica, eletrônica e programação para criar robôs capazes de executar tarefas complexas. Envolve cálculos de massa total, consumo de energia e eficiência dos componentes.</p>
-            </form>
-        </app-card>
+      <app-card>
+        <article class="topic-card">
+          <span class="topic-mark" aria-hidden="true">ME</span>
+          <div>
+            <h2>Engenharia mecânica</h2>
+            <p>Torque, força, massa e transmissão de potência ajudam a dimensionar componentes para operar de maneira previsível e segura.</p>
+          </div>
+        </article>
+      </app-card>
 
-        <app-card>
-            <form>
-                <h3>Sensor Ultrassonico</h3>
-                <p>O sensor ultrassônico mede distâncias usando ondas sonoras. Ele é essencial para navegação autônoma, permitindo que o robô detecte obstáculos e calcule trajetórias seguras.</p>
-            </form>
-        </app-card>
+      <app-card>
+        <article class="topic-card">
+          <span class="topic-mark" aria-hidden="true">AI</span>
+          <div>
+            <h2>Inteligência artificial</h2>
+            <p>Os modelos recebem dados, identificam padrões e produzem respostas ou decisões. O backend coordena a comunicação entre esses componentes.</p>
+          </div>
+        </article>
+      </app-card>
 
-        <app-card>
-            <form>
-                <h3>Inteligência Artificial</h3>
-                <p>A inteligência artificial dá ao robô a capacidade de aprender e se adaptar. Algoritmos de IA podem otimizar o uso de energia, prever falhas e melhorar a tomada de decisão.</p>
-            </form>
-        </app-card>
+      <app-card>
+        <article class="topic-card">
+          <span class="topic-mark" aria-hidden="true">US</span>
+          <div>
+            <h2>Sensores e percepção</h2>
+            <p>O sensor ultrassônico estima distâncias por meio de ondas sonoras. A câmera pode complementar a percepção visual quando os dados são processados pelo sistema.</p>
+          </div>
+        </article>
+      </app-card>
 
-        <app-card>
-            <form>
-                <h3>Conceitos Matemáticos e Energia</h3>
-                <p>Para calcular o torque de um motor, usamos <b>T = F × r</b>, onde F é a força e r é o raio da engrenagem. O dimensionamento de engrenagens envolve proporções de diâmetro e número de dentes para transmitir movimento com eficiência.</p>
-                <p>A massa total do robô influencia diretamente o gasto de energia: quanto maior a massa, maior a força necessária para mover o sistema. O consumo energético pode ser estimado pela potência <b>(P = V × I)</b>, relacionando tensão e corrente.</p>
-                <p>Resistores controlam a passagem de corrente elétrica, dissipando energia em forma de calor. Para reduzir uma voltagem sem danificar componentes, usamos divisores de tensão ou reguladores, que distribuem a energia de forma segura.</p>
-                <p>Conversores e reguladores de tensão são essenciais para alimentar circuitos com diferentes necessidades, evitando sobrecarga e garantindo eficiência.</p>
-            </form>
-        </app-card>
-    </form>
+      <app-card>
+        <article class="topic-card">
+          <span class="topic-mark" aria-hidden="true">∑</span>
+          <div>
+            <h2>Matemática e energia</h2>
+            <p>Torque pode ser estimado por <code>T = F × r</code>. A potência elétrica é dada por <code>P = V × I</code>; tensão, corrente e massa influenciam o projeto e o consumo.</p>
+          </div>
+        </article>
+      </app-card>
+    </div>
+
+    <section class="engineering-note">
+      <span class="note-symbol" aria-hidden="true">i</span>
+      <p>Os dados apresentados nesta página são explicativos. Leituras e comandos reais dependem da comunicação entre o robô e o backend Ádan_Stella.</p>
+    </section>
+  </section>
 </app-layout-main-interface>

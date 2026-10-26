@@ -1,41 +1,71 @@
 @use 'styles/variables' as *;
 
-.btn-section {
-  display: flex;
-  gap: 12px;
-  padding: 12px;
-  background: rgba(16, 27, 20, 0.72);
-  backdrop-filter: blur(18px) saturate(120%);
-  -webkit-backdrop-filter: blur(18px) saturate(120%);
-  border: 1px solid $color-border;
-  border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
-  position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 100;
+:host {
+  display: contents;
 }
 
-.route-btn {
-  padding: 8px;
-  border-radius: 12px;
-  transition: background 0.2s;
+.btn-section {
+  position: fixed;
+  z-index: 100;
+  left: 50%;
+  bottom: max(16px, env(safe-area-inset-bottom));
   display: flex;
+  max-width: calc(100vw - 24px);
   align-items: center;
   justify-content: center;
+  gap: 0.45rem;
+  padding: 0.6rem;
+  border: 1px solid rgba(32, 40, 35, 0.1);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 12px 36px rgba(25, 42, 32, 0.13), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(16px) saturate(125%);
+  -webkit-backdrop-filter: blur(16px) saturate(125%);
+  transform: translateX(-50%);
 
-  &:hover {
-    background: $color-surface-hover;
+  .route-btn {
+    display: grid;
+    width: 54px;
+    height: 52px;
+    flex: 0 0 auto;
+    place-items: center;
+    border: 1px solid transparent;
+    border-radius: 15px;
+    color: $color-text-secondary;
+    text-decoration: none;
+    transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
+
+    img {
+      display: block;
+      width: 25px;
+      height: 25px;
+      opacity: 0.82;
+      transition: opacity 160ms ease;
+    }
+
+    &:hover {
+      background: $color-surface-hover;
+      img { opacity: 1; }
+    }
+
+    &.active {
+      border-color: rgba(20, 125, 112, 0.14);
+      background: rgba(20, 125, 112, 0.09);
+      img { opacity: 1; }
+    }
+
+    &:active { transform: scale(0.97); }
   }
+}
 
-  &.active {
-    background: rgba(63, 143, 74, 0.24);
-    border: 1px solid rgba(145, 180, 150, 0.2);
-  }
+@media (max-width: 360px) {
+  .btn-section {
+    gap: 0.18rem;
+    padding: 0.42rem;
 
-  img {
-    width: 24px;
-    height: 24px;
+    .route-btn {
+      width: 49px;
+      height: 49px;
+    }
   }
 }
