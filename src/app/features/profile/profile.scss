@@ -14,11 +14,11 @@
   overflow: hidden;
   border: 1px solid rgba(24, 90, 80, 0.12);
   border-radius: 28px;
-  background: radial-gradient(ellipse at 80% 5%, rgba(196, 228, 214, 0.22), transparent 45%), linear-gradient(125deg, #25493B, #1A3329);
-  box-shadow: 0 14px 36px rgba(25, 42, 32, 0.09);
+  background: radial-gradient(ellipse at 80% 5%, rgba(20, 125, 112, 0.08), transparent 45%), linear-gradient(125deg, #FFFFFF, #EDF2ED);
+  box-shadow: 0 14px 36px rgba(25, 42, 32, 0.055);
 
   &.admin {
-    background: radial-gradient(ellipse at 80% 5%, rgba(211, 195, 144, 0.15), transparent 45%), linear-gradient(125deg, #2F4033, #1B2D24);
+    background: radial-gradient(ellipse at 80% 5%, rgba(162, 109, 19, 0.07), transparent 45%), linear-gradient(125deg, #FFFFFF, #F5F2E8);
   }
 
   .profile-hero-copy {
@@ -30,19 +30,19 @@
       display: inline-flex;
       margin: 0 0 0.9rem;
       padding: 0.4rem 0.75rem;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(20, 125, 112, 0.17);
       border-radius: 999px;
-      color: #D8EFE5;
-      background: rgba(255, 255, 255, 0.08);
+      color: $color-green-deep;
+      background: rgba(20, 125, 112, 0.07);
       font-size: 0.76rem;
       font-weight: 650;
     }
 
-    h1 { margin: 0; color: #ffffff; font-size: clamp(2rem, 4vw, 3rem); font-weight: 650; letter-spacing: -0.06em; line-height: 1.05; overflow-wrap: anywhere; }
-    > p:last-child { margin: 0.75rem 0 0; color: rgba(255, 255, 255, 0.8); font-size: 0.94rem; line-height: 1.6; }
+    h1 { margin: 0; color: $color-text-primary; font-size: clamp(2rem, 4vw, 3rem); font-weight: 650; letter-spacing: -0.06em; line-height: 1.05; overflow-wrap: anywhere; }
+    > p:last-child { margin: 0.75rem 0 0; color: $color-text-secondary; font-size: 0.94rem; line-height: 1.6; }
   }
 
-  &.admin .role-pill { color: #E3D5A4; border-color: rgba(227, 213, 164, 0.3); }
+  &.admin .role-pill { color: #7B5A18; border-color: rgba(162, 109, 19, 0.2); background: rgba(162, 109, 19, 0.06); }
 }
 
 .profile-avatar {
@@ -55,15 +55,62 @@
   place-items: center;
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 32px;
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 14px 45px rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 14px 36px rgba(25, 42, 32, 0.08);
 
-  img { display: block; width: 66px; height: 66px; object-fit: contain; }
+  img { display: block; width: 100%; height: 100%; border-radius: inherit; object-fit: cover; }
+  img.default-avatar { width: 66px; height: 66px; border-radius: 0; object-fit: contain; }
 }
 
-.hero-ornament { position: absolute; z-index: -1; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 50%; pointer-events: none; }
+.hero-ornament { position: absolute; z-index: -1; border: 1px solid rgba(20, 125, 112, 0.09); border-radius: 50%; pointer-events: none; }
 .ornament-one { top: -130px; right: -65px; width: 360px; height: 360px; }
 .ornament-two { right: 80px; bottom: -210px; width: 360px; height: 360px; }
+
+.profile-avatar-group {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.avatar-upload {
+  position: relative;
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 0.95rem;
+  overflow: hidden;
+  border: 1px solid $color-border-strong;
+  border-radius: 12px;
+  color: $color-text-secondary;
+  background: rgba(255, 255, 255, 0.82);
+  font-size: 0.82rem;
+  font-weight: 650;
+  cursor: pointer;
+  transition: border-color 160ms ease, background-color 160ms ease;
+
+  &:hover:not(.uploading) {
+    border-color: rgba(20, 125, 112, 0.32);
+    background: #FFFFFF;
+  }
+
+  &.uploading { cursor: progress; opacity: 0.7; }
+
+  input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &:focus-within { outline: 2px solid $color-green-primary; outline-offset: 3px; }
+}
 
 .profile-columns { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr); gap: 1rem; }
 
@@ -133,7 +180,7 @@
   .profile-columns { grid-template-columns: 1fr; }
   .profile-hero { min-height: 230px; }
   .profile-avatar { width: 86px; height: 86px; border-radius: 24px; }
-  .profile-avatar img { width: 50px; height: 50px; }
+  .profile-avatar img.default-avatar { width: 50px; height: 50px; }
 }
 
 @media (max-width: 480px) {
