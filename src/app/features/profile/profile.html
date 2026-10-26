@@ -7,8 +7,20 @@
         <h1>{{ username | titlecase }}</h1>
         <p>Seu perfil e as informações associadas à sessão atual.</p>
       </div>
-      <div class="profile-avatar">
-        <img [src]="imgUrl || 'assets/svg/user-icon.svg'" alt="Foto de perfil" />
+      <div class="profile-avatar-group">
+        <div class="profile-avatar">
+          <img [src]="imgUrl() || 'assets/svg/user-icon.svg'" [class.default-avatar]="!imgUrl()" alt="Foto de perfil" />
+        </div>
+        <label class="avatar-upload" [class.uploading]="isUploadingAvatar">
+          <span>{{ isUploadingAvatar ? 'Salvando foto…' : 'Alterar foto' }}</span>
+          <input
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            [disabled]="isUploadingAvatar"
+            (change)="onAvatarSelected($event)"
+            aria-label="Escolher uma foto de perfil"
+          />
+        </label>
       </div>
       <span class="hero-ornament ornament-one" aria-hidden="true"></span>
       <span class="hero-ornament ornament-two" aria-hidden="true"></span>
