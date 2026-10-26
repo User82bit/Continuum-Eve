@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NavFloat } from '../../ui/nav-float/nav-float';
+import { SessionService } from '../../../core/services/session.service';
 
 @Component({
   selector: 'app-layout-main-interface',
@@ -8,4 +9,7 @@ import { NavFloat } from '../../ui/nav-float/nav-float';
   templateUrl: './layout-main-interface.html',
   styleUrl: './layout-main-interface.scss',
 })
-export class LayoutMainInterface {}
+export class LayoutMainInterface {
+  private readonly sessionService = inject(SessionService);
+  readonly avatarUrl = computed(() => this.sessionService.userSignal().imgUrl);
+}
