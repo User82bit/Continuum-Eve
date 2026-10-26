@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { LayoutMainInterface } from '../../shared/layout/layout-main-interface/layout-main-interface';
 import { Card } from '../../shared/ui/card/card';
 import { MapInfoComponent } from '../../shared/ui/map-info-component/map-info-component';
-import { RobotService } from '../../core/services/robot.service';
+import { RobotConnectionState, RobotService } from '../../core/services/robot.service';
 
 @Component({
   selector: 'app-home',
@@ -15,8 +15,9 @@ import { RobotService } from '../../core/services/robot.service';
 export class Home implements OnInit, OnDestroy {
   private readonly robotService = inject(RobotService);
   private robotDataSubscription?: Subscription;
+  private connectionSubscription?: Subscription;
 
-  status = 'Aguardando telemetria';
+  status = 'Conectando...';
   isOnline = false;
   battery: number | null = null;
   distance: number | null = null;
@@ -26,6 +27,14 @@ export class Home implements OnInit, OnDestroy {
   constructor(private readonly ngZone: NgZone, private readonly cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
+    this.connectionSubscription = this.robotService.connectionState$.subscribe((state) => {
+      this.ngZone.run(() => {
+        this.status = this.connectionText(state);
+        this.isOnline = state === 'connected';
+        this.cdr.markForCheck();
+      });
+    });
+
     this.robotDataSubscription = this.robotService.robotData$.subscribe((data) => {
       const payload = this.toRecord(data);
       if (!payload) return;
@@ -38,19 +47,6 @@ export class Home implements OnInit, OnDestroy {
         if (distance !== null) this.distance = Math.max(0, distance);
         if (battery !== null) this.battery = Math.max(0, Math.min(100, battery));
         if (planted !== null) this.totalPlanted = Math.max(0, planted);
-
-        const state = this.readText(payload, ['status', 'Status', 'estado', 'Estado']);
-        if (state) {
-          this.status = state;
-          this.isOnline = ['online', 'ativo', 'active', 'connected', 'conectado', 'running'].includes(state.toLowerCase());
-        } else {
-          const connected = payload['connected'] ?? payload['Connected'] ?? payload['isOnline'] ?? payload['IsOnline'];
-          if (typeof connected === 'boolean') {
-            this.isOnline = connected;
-            this.status = connected ? 'Conectado' : 'Desconectado';
-          }
-        }
-
         this.cdr.markForCheck();
       });
     });
@@ -58,6 +54,17 @@ export class Home implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.robotDataSubscription?.unsubscribe();
+    this.connectionSubscription?.unsubscribe();
+  }
+
+  private connectionText(state: RobotConnectionState): string {
+    const labels: Record<RobotConnectionState, string> = {
+      connecting: 'Conectando...',
+      connected: 'Conectado',
+      reconnecting: 'Reconectando...',
+      disconnected: 'Desconectado',
+    };
+    return labels[state];
   }
 
   private toRecord(data: unknown): Record<string, unknown> | null {
@@ -75,14 +82,6 @@ export class Home implements OnInit, OnDestroy {
       if (value === null || value === undefined || value === '') continue;
       const numericValue = typeof value === 'number' ? value : Number(value);
       if (Number.isFinite(numericValue)) return Math.round(numericValue);
-    }
-    return null;
-  }
-
-  private readText(record: Record<string, unknown>, keys: string[]): string | null {
-    for (const key of keys) {
-      const value = record[key];
-      if (typeof value === 'string' && value.trim()) return value.trim();
     }
     return null;
   }
