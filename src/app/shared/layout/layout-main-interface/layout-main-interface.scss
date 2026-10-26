@@ -56,9 +56,13 @@
 
     img {
       display: block;
-      width: 24px;
-      height: 24px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
       opacity: 0.88;
+
+      &.avatar-photo { width: 32px; height: 32px; }
     }
 
     &:hover {
