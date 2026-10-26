@@ -2,6 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
+export type ChatbotRole = 'assistant' | 'user';
+
+export interface ChatbotHistoryMessage {
+  role: ChatbotRole;
+  content: string;
+}
+
 export interface ChatbotReply {
   reply: string;
 }
@@ -14,7 +21,10 @@ export class ChatbotService {
   // Para produção, substitua pelo domínio público da API quando o backend for hospedado.
   private readonly endpoint = 'http://localhost:5171/api/chatbot/chat';
 
-  sendMessage(message: string): Observable<ChatbotReply> {
-    return this.http.post<ChatbotReply>(this.endpoint, { message });
+  sendMessage(
+    message: string,
+    history: ChatbotHistoryMessage[] = [],
+  ): Observable<ChatbotReply> {
+    return this.http.post<ChatbotReply>(this.endpoint, { message, history });
   }
 }
