@@ -12,12 +12,20 @@
 
 .island {
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.78);
   border-top: 0;
   border-radius: 0 0 23px 23px;
-  background: #111a16;
-  box-shadow: 0 12px 36px rgba(15, 29, 22, 0.22);
-  color: #f7faf7;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.86),
+    rgba(244, 248, 245, 0.74)
+  );
+  box-shadow:
+    0 12px 36px rgba(31, 45, 37, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92);
+  -webkit-backdrop-filter: blur(26px) saturate(165%);
+  backdrop-filter: blur(26px) saturate(165%);
+  color: #202823;
 }
 
 .island-trigger {
@@ -40,10 +48,10 @@
   height: 34px;
   flex: 0 0 auto;
   place-items: center;
-  border: 1px solid rgba(130, 205, 173, 0.18);
+  border: 1px solid rgba(20, 125, 112, 0.16);
   border-radius: 50%;
-  background: rgba(73, 155, 119, 0.16);
-  color: #9ee0bc;
+  background: rgba(20, 125, 112, 0.085);
+  color: #147d70;
 
   svg { width: 21px; height: 21px; }
 }
@@ -57,7 +65,7 @@
 }
 
 .island-title {
-  color: #f7faf7;
+  color: #202823;
   font-size: 0.87rem;
   font-weight: 700;
   letter-spacing: -0.01em;
@@ -66,7 +74,7 @@
 
 .island-subtitle {
   overflow: hidden;
-  color: #aab9b0;
+  color: #66736b;
   font-size: 0.72rem;
   line-height: 1.25;
   text-overflow: ellipsis;
@@ -78,11 +86,11 @@
   height: 7px;
   flex: 0 0 auto;
   border-radius: 50%;
-  background: #7a8a80;
+  background: #a0aaa3;
   transition: background-color 160ms ease;
 }
 
-.indicator-active { background: #86d9ab; }
+.indicator-active { background: #198b7d; }
 
 .island-chevron {
   display: grid;
@@ -90,7 +98,7 @@
   height: 22px;
   flex: 0 0 auto;
   place-items: center;
-  color: #b4c2b9;
+  color: #65716a;
   transition: transform 180ms ease;
 
   svg { width: 16px; height: 16px; }
@@ -102,8 +110,10 @@
   display: flex;
   max-height: min(560px, calc(100dvh - 78px));
   flex-direction: column;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  background: #fbfcfa;
+  border-top: 1px solid rgba(32, 40, 35, 0.08);
+  background: rgba(250, 252, 250, 0.92);
+  -webkit-backdrop-filter: blur(26px) saturate(155%);
+  backdrop-filter: blur(26px) saturate(155%);
   color: #202823;
 }
 
@@ -322,10 +332,19 @@
   }
 
   .island {
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.86);
     border-radius: 30px;
     padding: 3px;
-    box-shadow: 0 9px 28px rgba(15, 29, 22, 0.24);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.88),
+      rgba(242, 247, 243, 0.8)
+    );
+    box-shadow:
+      0 10px 30px rgba(31, 45, 37, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.96);
+    -webkit-backdrop-filter: blur(28px) saturate(170%);
+    backdrop-filter: blur(28px) saturate(170%);
   }
 
   .island-trigger {
