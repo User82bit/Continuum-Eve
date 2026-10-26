@@ -1,69 +1,50 @@
-<main>
-    <div class="header-section" [class.admin]="isAdmin">
-        <!-- Banner dinâmico: recebe classe 'admin' ou 'membro' do .ts -->
-        <div class="profile-banner">
-        <div class="blob blob-tl"></div>
-        <div class="blob blob-bl"></div>
-        <div class="blob blob-tr"></div>
-        <div class="blob blob-br"></div>
-        <div class="blob blob-leaf-left"></div>
-        <div class="blob blob-leaf-right"></div>
-        
-        <!-- Divisores laterais do centro -->
-        <div class="divline divline-left"></div>
-        <div class="divline divline-right"></div>
-        
-        <!-- Lado esquerdo: cargo -->
-        <div class="banner-side banner-side--left">
-            <span class="banner-tag">Project-Éden</span>
-            <span class="banner-title">{{ isAdmin ? 'Administrador' : 'Membro' }}</span>
-            <span class="banner-sub">{{ isAdmin ? 'Acesso privilegiado' : 'Bem-vindo à comunidade' }}</span>
-            </div>
-            
-            <!-- Centro: espaço reservado para a foto de perfil -->
-            <div class="banner-center">
-                <div class="banner-center__circle">
-                    <!-- Ícone de admin no centro apenas para admins -->
-                    @if (isAdmin) {
-                        <span class="banner-center__icon">✦</span>
-                    }
-                </div>
-            </div>
-            
-            <!-- Lado direito: empresa -->
-            <div class="banner-side banner-side--right">
-                <span class="banner-tag">Áperos Imperium</span>
-                <span class="banner-right-main">Robótica · IA · Engenharia</span>
-                <span class="banner-right-sub">{{ isAdmin ? 'Admin' : 'Membro' }} desde {{ date | date:'dd/MM/yyyy HH:mm' }}</span>
-            </div>
+<app-layout-main-interface>
+  <section class="profile-page">
+    <header class="profile-hero" [class.admin]="isAdmin">
+      <div class="profile-hero-copy">
+        <p class="page-eyebrow">CONTA DO PROJETO ÉDEN</p>
+        <span class="role-pill">{{ isAdmin ? 'Acesso administrativo' : 'Membro' }}</span>
+        <h1>{{ username | titlecase }}</h1>
+        <p>Seu perfil e as informações associadas à sessão atual.</p>
+      </div>
+      <div class="profile-avatar-group">
+        <div class="profile-avatar">
+          <img [src]="imgUrl() || 'assets/svg/user-icon.svg'" [class.default-avatar]="!imgUrl()" alt="Foto de perfil" />
         </div>
-        
-        <!-- Foto de perfil sobreposta ao banner -->
-        <div class="avatar-wrapper">
-            <img src="assets/svg/user-icon.svg" alt="Profile Icon" class="avatar-img">
-        </div>
-        
-        <h4 class="profile-username" [class.admin]="isAdmin">{{ username | titlecase }}</h4>
+        <label class="avatar-upload" [class.uploading]="isUploadingAvatar">
+          <span>{{ isUploadingAvatar ? 'Salvando foto…' : 'Alterar foto' }}</span>
+          <input
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            [disabled]="isUploadingAvatar"
+            (change)="onAvatarSelected($event)"
+            aria-label="Escolher uma foto de perfil"
+          />
+        </label>
+      </div>
+      <span class="hero-ornament ornament-one" aria-hidden="true"></span>
+      <span class="hero-ornament ornament-two" aria-hidden="true"></span>
+    </header>
+
+    <div class="profile-columns">
+      <section class="profile-card">
+        <p class="page-eyebrow">INFORMAÇÕES PESSOAIS</p>
+        <h2>Dados da conta</h2>
+        <dl class="profile-details">
+          <div><dt>Nome de usuário</dt><dd>{{ username }}</dd></div>
+          <div><dt>E-mail</dt><dd>{{ email }}</dd></div>
+          <div><dt>Perfil de acesso</dt><dd>{{ isAdmin ? 'Administrador' : 'Membro' }}</dd></div>
+          <div><dt>Conta criada</dt><dd>{{ date ? (date | date:'dd/MM/yyyy') : 'Não informado' }}</dd></div>
+        </dl>
+      </section>
+
+      <section class="profile-card security-card">
+        <p class="page-eyebrow">SESSÃO E SEGURANÇA</p>
+        <h2>Gerencie seu acesso</h2>
+        <p>Encerre a sessão neste dispositivo para proteger o acesso à interface e aos controles administrativos.</p>
+        <div class="security-status"><span aria-hidden="true">✓</span><span>As rotas da aplicação verificam a sessão antes de abrir áreas autenticadas.</span></div>
+        <button class="logout" type="button" (click)="onLogout()">Sair da conta <span aria-hidden="true">↗</span></button>
+      </section>
     </div>
-    <hr>
-    <section class="main-section">
-        <div class="auto-display">
-            <button class="config-btn">
-                Trocar nome de Usuário <b>></b>
-            </button>
-            <button class="config-btn">
-                Trocar Email <b>></b>
-            </button>
-            <button class="config-btn">
-                Trocar Senha <b>></b>
-            </button>
-        </div>
-        <div class="more-buttons">
-            <button>Nao sei <b>></b></button>
-            <button>Nao sei <b>></b></button>
-            <button class="logout" (click)="onLogout()">Sair da conta <b>></b></button>
-        </div>
-    </section>
-    <hr>
-    <app-nav-float/>
-</main>
+  </section>
+</app-layout-main-interface>

@@ -1,85 +1,197 @@
-@use "../../../../styles/_variables" as *;
-@use "../../../../styles/_breakpoints.scss" as *;
+@use 'styles/variables' as *;
 
-.map-section {
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 1000;
-    background: rgba(7, 16, 10, 0.8);
-    backdrop-filter: blur(12px);
+:host { position: fixed; z-index: 1000; inset: 0; display: block; }
 
-    @include lg {
-        flex-direction: row;
-    }
+.monitor-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: minmax(290px, 360px) minmax(0, 1fr);
+  overflow: auto;
+  background: rgba(25, 37, 30, 0.42);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
 
-    .side-bar {
-        background: $color-surface;
-        border-right: 1px solid $color-border;
-        padding: 32px;
-        overflow-y: auto;
-        
-        @include lg {
-            width: 400px;
-            height: 100%;
-        }
+.monitor-sidebar {
+  z-index: 1;
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  padding: clamp(1.1rem, 3vw, 2rem);
+  border-right: 1px solid $color-border;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 8px 0 32px rgba(25, 42, 32, 0.07);
+}
 
-        .primary-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 32px;
+.monitor-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.4rem;
 
-            h1 {
-                font-size: 1.5rem;
-                color: $color-text-primary;
-            }
+  .page-eyebrow { margin-bottom: 0.4rem; }
+  h1 { margin: 0; color: $color-text-primary; font-size: 1.65rem; font-weight: 650; letter-spacing: -0.045em; }
+}
 
-            .close-btn {
-                background: $color-surface-elevated;
-                border: 1px solid $color-border;
-                color: $color-text-primary;
-                padding: 8px;
-                border-radius: 50%;
-                cursor: pointer;
-                transition: background 0.2s;
+.close-btn {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid $color-border;
+  border-radius: 15px;
+  color: $color-text-primary;
+  background: #ffffff;
+  font-size: 1.65rem;
+  line-height: 1;
+  transition: border-color 160ms ease, background-color 160ms ease;
 
-                &:hover {
-                    background: $color-surface-hover;
-                }
-            }
-        }
+  &:hover { border-color: $color-border-strong; background: $color-surface-hover; }
+}
 
-        .data-section {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-    }
+.monitor-status {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid $color-border;
+  border-radius: 16px;
+  background: #ffffff;
 
-    .display {
-        flex-grow: 1;
-        padding: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+  .status-dot { width: 9px; height: 9px; flex: 0 0 auto; border-radius: 50%; background: $color-warning; }
+  strong, span:not(.status-dot) { display: block; }
+  strong { color: $color-text-primary; font-size: 0.9rem; }
+  span:not(.status-dot) { margin-top: 0.2rem; color: $color-text-muted; font-size: 0.79rem; }
 
-        .map-canvas {
-            width: 100%;
-            height: 100%;
-            background: $color-bg-primary;
-            border: 1px solid $color-border;
-            border-radius: 16px;
-            overflow: hidden;
-            
-            canvas {
-                width: 100%;
-                height: 100%;
-            }
-        }
-    }
+  &.online {
+    border-color: rgba(20, 125, 112, 0.19);
+    .status-dot { background: $color-success; box-shadow: 0 0 0 4px rgba(40, 125, 84, 0.1); }
+  }
+}
+
+.telemetry-list { display: grid; gap: 0.8rem; margin-top: 1rem; }
+
+.telemetry-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1rem;
+  border: 1px solid $color-border;
+  border-radius: 16px;
+  background: linear-gradient(145deg, #ffffff, #F8FAF7);
+
+  .telemetry-label { color: $color-text-secondary; font-size: 0.8rem; font-weight: 600; }
+  strong { color: $color-text-primary; font-size: 1.9rem; font-weight: 650; letter-spacing: -0.055em; }
+  span:last-child { color: $color-text-muted; font-size: 0.78rem; }
+}
+
+.monitor-footnote { margin: auto 0 0; padding-top: 2rem; color: $color-text-muted; font-size: 0.8rem; line-height: 1.7; }
+
+.monitor-main {
+  display: flex;
+  min-width: 0;
+  min-height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  padding: clamp(1rem, 3vw, 2.5rem);
+}
+
+.sensor-visual {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  min-height: min(66vh, 650px);
+  overflow: hidden;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 24px;
+  background: radial-gradient(ellipse at 50% 48%, rgba(20, 125, 112, 0.21), transparent 42%), linear-gradient(145deg, #263B31, #16251D);
+  box-shadow: 0 14px 40px rgba(25, 42, 32, 0.12);
+}
+
+.sensor-grid {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background-image: linear-gradient(rgba(223, 242, 229, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(223, 242, 229, 0.08) 1px, transparent 1px);
+  background-size: 36px 36px;
+  mask-image: radial-gradient(ellipse, #000 20%, transparent 80%);
+}
+
+.sensor-ring { position: absolute; aspect-ratio: 1; border: 1px solid rgba(196, 228, 214, 0.22); border-radius: 50%; }
+.sensor-ring-outer { width: min(64vw, 500px); }
+.sensor-ring-middle { width: min(48vw, 370px); border-style: dashed; }
+.sensor-ring-inner { width: min(31vw, 230px); border-color: rgba(124, 204, 209, 0.32); }
+
+.sensor-center {
+  display: grid;
+  width: 78px;
+  height: 78px;
+  place-items: center;
+  border: 1px solid rgba(196, 228, 214, 0.42);
+  border-radius: 24px;
+  color: #C4E4D6;
+  background: rgba(23, 63, 48, 0.92);
+  box-shadow: 0 0 0 12px rgba(196, 228, 214, 0.06), 0 0 70px rgba(20, 125, 112, 0.16);
+  font-size: 1.8rem;
+  font-weight: 750;
+}
+
+.sensor-line { position: absolute; background: rgba(196, 228, 214, 0.14); }
+.sensor-line-horizontal { width: 84%; height: 1px; }
+.sensor-line-vertical { width: 1px; height: 80%; }
+
+.sensor-point {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #9BD7DB;
+  box-shadow: 0 0 0 6px rgba(155, 215, 219, 0.1), 0 0 22px rgba(155, 215, 219, 0.25);
+}
+.sensor-point-one { top: 31%; left: 29%; }
+.sensor-point-two { right: 25%; bottom: 29%; background: #C4E4D6; }
+
+.visual-caption {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  left: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.74rem;
+
+  span:first-child { color: #C4E4D6; font-weight: 700; letter-spacing: 0.12em; }
+}
+
+.monitor-bottom-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid $color-border;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.85);
+
+  .note-icon { display: grid; width: 22px; height: 22px; flex: 0 0 auto; place-items: center; border: 1px solid rgba(20, 125, 112, 0.2); border-radius: 50%; color: $color-green-primary; font-size: 0.75rem; font-weight: 700; }
+  p { margin: 0; color: $color-text-secondary; font-size: 0.8rem; line-height: 1.6; }
+}
+
+@media (max-width: 820px) {
+  .monitor-overlay { grid-template-columns: 1fr; align-content: start; }
+  .monitor-sidebar { min-height: auto; border-right: 0; border-bottom: 1px solid $color-border; }
+  .monitor-footnote { margin-top: 1rem; padding-top: 0; }
+  .monitor-main { min-height: auto; }
+  .sensor-visual { min-height: 360px; }
+  .sensor-ring-outer { width: min(72vw, 400px); }
+  .sensor-ring-middle { width: min(54vw, 300px); }
+  .sensor-ring-inner { width: min(35vw, 190px); }
 }

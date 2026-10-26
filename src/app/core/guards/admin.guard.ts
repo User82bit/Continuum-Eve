@@ -2,7 +2,7 @@ import { inject } from '@angular/core';
 import { Router, CanActivateFn } from '@angular/router';
 import { SessionService } from '../services/session.service';
 
-export const adminGuard: CanActivateFn = (route, state) => {
+export const adminGuard: CanActivateFn = () => {
   const sessionService = inject(SessionService);
   const router = inject(Router);
 
@@ -10,7 +10,6 @@ export const adminGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
-  // Acesso negado
-  router.navigate(['/access-denied']); 
-  return false;
+  // A rota /access-denied não existe; devolve o usuário à área autenticada.
+  return router.parseUrl(sessionService.token ? '/home' : '/login');
 };

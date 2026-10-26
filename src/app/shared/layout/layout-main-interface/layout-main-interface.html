@@ -1,12 +1,18 @@
-<main>
-    <section class="header-section">
-        <img class="logo-icon" src="assets/png/logoBg-main.png" alt="logo" width="120"/>
-        <button class="route-btn" routerLink="/profile"><img src="assets/svg/user-icon.svg" width="30"></button>
-    </section>
-    <div></div>
-    <section class="main-section">
-        <ng-content/>
-    </section>
-    <div></div>
-    <app-nav-float/>
+<main class="app-shell">
+  <header class="header-section">
+    <a class="brand-cluster" routerLink="/home" aria-label="Abrir painel principal do Projeto Éden">
+      <img class="logo-icon" src="assets/png/logoBg-main.png" alt="Projeto Éden" width="190" height="62" />
+    </a>
+    <a class="account-link" routerLink="/profile" aria-label="Abrir perfil" title="Perfil">
+      <img [src]="avatarUrl() || 'assets/svg/user-icon.svg'" [class.avatar-photo]="!!avatarUrl()" width="32" height="32" alt="" />
+    </a>
+  </header>
+
+  <div class="layout-divider" aria-hidden="true"></div>
+
+  <section class="main-section">
+    <ng-content></ng-content>
+  </section>
+
+  <app-nav-float />
 </main>

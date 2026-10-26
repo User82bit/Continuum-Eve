@@ -1,67 +1,48 @@
 <div class="change-password-container">
   <div class="form-box">
-    
-    <div class="header-form">
-      <img src="assets/png/logoBg-main.png" alt="Project-Éden Logo" class="logo">
-      <h2>Alterar sua senha</h2>
-      <p class="subtitle">Escolha uma senha forte para garantir a segurança da sua conta.</p>
-      <span class="alert">Enviamos o código de segurança para o seu e-mail. Caso tenha problemas, entre em contato com o suporte nesse email: <b>support@projecteden.com</b></span>
-    </div>
+    <header class="header-form">
+      <a routerLink="/login" aria-label="Voltar para o login">
+        <img src="assets/png/logoBg-main.png" alt="Símbolo do Projeto Éden" class="logo">
+      </a>
+      <p class="page-eyebrow">SEGURANÇA DA CONTA</p>
+      <h2>Recuperar senha</h2>
+      <p class="subtitle">Defina uma nova senha usando o código enviado ao e-mail da sua conta.</p>
+      <span class="alert">Se não encontrar o código, confira a caixa de spam. Se ele tiver expirado, retorne ao login e reinicie a recuperação.</span>
+    </header>
 
     <form class="password-form" [formGroup]="passwordForm" (ngSubmit)="submit()">
-        
-        <div class="input-group">
-            <label for="code">Código de segurança</label>
-            <div class="input-wrapper">
-            <input 
-                type="text" 
-                id="code" 
-                formControlName="code"
-                placeholder="Digite seu código de segurança"
-                maxlength="6"
-                required>
-            <div class="icon-container">
-                <span class="icon-lock">🔒</span> 
-            </div>
-            </div>
+      <div class="input-group">
+        <label for="code">Código de segurança</label>
+        <div class="input-wrapper">
+          <input type="text" id="code" formControlName="code" placeholder="Digite o código de 6 caracteres" maxlength="6" autocomplete="one-time-code" required>
+          <div class="icon-container" aria-hidden="true">⌑</div>
         </div>
+      </div>
 
-        <div class="input-group">
-            <label for="newPassword">Nova Senha</label>
-            <div class="input-wrapper">
-            <input 
-                type="password" 
-                id="newPassword" 
-                formControlName="newPassword"
-                placeholder="Crie uma nova senha forte"
-                required>
-            <div class="icon-container">
-                <span class="icon-lock">🔒</span>
-            </div>
-            </div>
+      <div class="input-group">
+        <label for="newPassword">Nova senha</label>
+        <div class="input-wrapper">
+          <input type="password" id="newPassword" formControlName="newPassword" placeholder="Mínimo de 6 caracteres" autocomplete="new-password" required>
+          <div class="icon-container" aria-hidden="true">⌑</div>
         </div>
+      </div>
 
-        <div class="input-group">
-            <label for="confirmPassword">Confirmar Nova Senha</label>
-            <div class="input-wrapper">
-            <input 
-                type="password" 
-                id="confirmPassword" 
-                formControlName="confirmPassword"
-                placeholder="Confirme sua nova senha"
-                required>
-            <div class="icon-container">
-                <span class="icon-lock">🔒</span>
-            </div>
-            </div>
+      <div class="input-group">
+        <label for="confirmPassword">Confirmar nova senha</label>
+        <div class="input-wrapper">
+          <input type="password" id="confirmPassword" formControlName="confirmPassword" placeholder="Digite a senha novamente" autocomplete="new-password" required>
+          <div class="icon-container" aria-hidden="true">⌑</div>
         </div>
+      </div>
 
-        <div class="form-actions">
-            <button type="submit" class="btn-submit" [disabled]="passwordForm.invalid">Salvar Nova Senha</button>
-            <button type="button" class="btn-cancel" routerLink="/login">Cancelar</button>
-        </div>
+      @if (passwordForm.hasError('passwordMismatch') && passwordForm.controls.confirmPassword.touched) {
+        <p class="form-error">As senhas não coincidem.</p>
+      }
 
+      <div class="form-actions">
+        <button type="submit" class="btn-submit" [disabled]="passwordForm.invalid">Salvar nova senha</button>
+        <button type="button" class="btn-cancel" routerLink="/login">Cancelar</button>
+      </div>
     </form>
-
   </div>
 </div>

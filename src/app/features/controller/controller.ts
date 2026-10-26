@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { DecimalPipe } from '@angular/common';
 import { LayoutMainInterface } from '../../shared/layout/layout-main-interface/layout-main-interface';
 import { GamepadService } from '../../core/services/gamepad.service';
 import { RobotService } from '../../core/services/robot.service';
 import { GamepadCommand } from '../../core/models/gamepad-command.model';
-import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-controller',
@@ -14,109 +14,70 @@ import { DecimalPipe } from '@angular/common';
   styleUrl: './controller.scss',
 })
 export class Controller implements OnInit, OnDestroy {
+  private readonly gamepadService = inject(GamepadService);
+  private readonly robotService = inject(RobotService);
 
-  // ─── Injeção de dependências ──────────────────────────────────────────────
-  private gamepadService = inject(GamepadService);
-  private robotService = inject(RobotService);
-
-  // ─── State reativo (signals) ──────────────────────────────────────────────
-
-  // Estado atual do comando — atualizado a cada frame com mudança
-  readonly currentCommand = signal<GamepadCommand>({
-    x: 0,
-    y: 0,
-    connected: false,
-    gamepadId: ''
-  });
-
-  // Indica se o controle está conectado
+  readonly currentCommand = signal<GamepadCommand>({ x: 0, y: 0, connected: false, gamepadId: '' });
   readonly isConnected = signal(false);
-
-  // Indica se o controle virtual já foi usado
   readonly virtualActive = signal(false);
-
-  // Direção textual calculada a partir de x e y — pra mostrar no HUD
   readonly direction = signal('Parado');
 
-  // ─── Subscrições ──────────────────────────────────────────────────────────
-
-  // Guardamos as subscrições pra poder cancelar no ngOnDestroy
-  // Não cancelar causa memory leak — o service continua emitindo mesmo depois
-  // que o componente é destruído (quando o usuário muda de rota)
-  private commandSub!: Subscription;
-  private connectedSub!: Subscription;
-
-  // ─── Lifecycle ────────────────────────────────────────────────────────────
+  private commandSub?: Subscription;
+  private connectedSub?: Subscription;
 
   ngOnInit(): void {
-    // Subscreve no stream de conexão
-    this.connectedSub = this.gamepadService.connected$.subscribe(connected => {
+    this.connectedSub = this.gamepadService.connected$.subscribe((connected) => {
       this.isConnected.set(connected);
-
-      // Quando desconecta, zera o estado visual
       if (!connected) {
         this.currentCommand.set({ x: 0, y: 0, connected: false, gamepadId: '' });
         this.direction.set('Parado');
       }
     });
 
-    // Subscreve no stream de comandos
-    // Cada emissão do GamepadService cai aqui
-    this.commandSub = this.gamepadService.command$.subscribe(command => {
-      // Atualiza o estado visual
+    // A telemetria visual e o envio HTTP usam a mesma emissão de comando.
+    this.commandSub = this.gamepadService.command$.subscribe((command) => {
       this.currentCommand.set(command);
       this.direction.set(this.calculateDirection(command));
-
-      // Envia pro robô
-      // Por enquanto só loga — quando o .NET estiver pronto vai fazer HTTP
       this.robotService.sendCommand(command);
     });
+
+    this.gamepadService.activate();
   }
 
   ngOnDestroy(): void {
-    // IMPORTANTE: sempre cancelar subscrições no destroy
-    // Se não fizer isso, o callback continua rodando mesmo depois
-    // que o componente é destruído — isso causa memory leak
+    const current = this.currentCommand();
+    // O serviço só acompanha movimentos do gamepad físico. Se o comando
+    // ativo veio do controle virtual, a tela é responsável pela parada final.
+    if (current.gamepadId === 'Controle virtual' && (current.x !== 0 || current.y !== 0)) {
+      this.robotService.sendCommand({ x: 0, y: 0, connected: false, gamepadId: 'Controle virtual' });
+    }
+
+    this.gamepadService.deactivate();
     this.commandSub?.unsubscribe();
     this.connectedSub?.unsubscribe();
   }
 
-  // ─── Helpers ──────────────────────────────────────────────────────────────
-
-  // Calcula uma string legível baseada nos valores de x e y
-  // Usado só pra exibição no HUD — não tem efeito no robô
-  private calculateDirection(cmd: GamepadCommand): string {
-    const moving = Math.abs(cmd.y) > 0.05;
-    const turning = Math.abs(cmd.x) > 0.05;
-
+  private calculateDirection(command: GamepadCommand): string {
+    const moving = Math.abs(command.y) > 0.05;
+    const turning = Math.abs(command.x) > 0.05;
     if (!moving && !turning) return 'Parado';
 
     const parts: string[] = [];
-
-    if (moving) parts.push(cmd.y > 0 ? 'Frente' : 'Ré');
-    if (turning) parts.push(cmd.x > 0 ? 'Direita' : 'Esquerda');
-
+    if (moving) parts.push(command.y > 0 ? 'Frente' : 'Ré');
+    if (turning) parts.push(command.x > 0 ? 'Direita' : 'Esquerda');
     return parts.join(' + ');
   }
 
-  // Converte o valor -1→1 pra uma porcentagem 0→100 pra barra de progresso no HUD
   toPercent(value: number): number {
-    return Math.round(Math.abs(value) * 100);
+    return Math.round(Math.min(1, Math.abs(value)) * 100);
   }
 
-  // Converte o valor de direção X pra uma posição visual na barra (-100% a +100%)
   toOffsetPercent(value: number): number {
-    return Math.round(value * 100);
+    return Math.round(Math.max(-1, Math.min(1, value)) * 100);
   }
 
   sendVirtualCommand(x: number, y: number): void {
-    const command: GamepadCommand = {
-      x,
-      y,
-      connected: false,
-      gamepadId: 'Controle virtual'
-    };
-
+    const command: GamepadCommand = { x, y, connected: false, gamepadId: 'Controle virtual' };
     this.virtualActive.set(true);
     this.currentCommand.set(command);
     this.direction.set(this.calculateDirection(command));
@@ -124,6 +85,7 @@ export class Controller implements OnInit, OnDestroy {
   }
 
   stopVirtualCommand(): void {
+    if (this.currentCommand().x === 0 && this.currentCommand().y === 0) return;
     this.sendVirtualCommand(0, 0);
   }
 }

@@ -1,23 +1,32 @@
-<main>
-    <section class="form-section">
-        <img src="assets/png/logoBg.png" alt="logo" width="110"/>
-        <h2>{{title()}}</h2>
-        <ng-content></ng-content>
-        <div class="btn-wrapper">
-            <button
-                type="button"
-                class="btnPrimary"
-                [disabled]="disablePrimaryButton()"
-                (click)="submit()"
-            >
-                {{primaryButtonText()}}
-            </button>
-            <div class="divider">
-                <div></div>
-                <span>or</span>
-                <div></div>
-            </div>
-            <button type="button" class="btnSecondary" (click)="navigate()">{{secondaryButtonText()}}</button>
-        </div>
-    </section>
+<main class="default-login-layout">
+  <div class="auth-image-panel" aria-hidden="true"></div>
+  <section class="form-section" aria-labelledby="auth-title">
+    <a class="brand-mark" routerLink="/login" aria-label="Continuum-Eve — início">
+      <img src="assets/png/logoBg.png" alt="Símbolo do Projeto Éden" width="88" height="88" />
+    </a>
+    <p class="page-eyebrow">Projeto Éden · Continuum-Eve</p>
+    <h2 id="auth-title">{{ title() }}</h2>
+    <p class="form-intro">Tecnologia, natureza e inteligência trabalhando em conjunto.</p>
+
+    <ng-content></ng-content>
+
+    <div class="btn-wrapper">
+      <button
+        type="button"
+        class="btnPrimary"
+        [disabled]="disablePrimaryButton()"
+        (click)="submit()"
+      >
+        {{ primaryButtonText() }}
+      </button>
+      <div class="divider" aria-hidden="true">
+        <span></span>
+        <span class="divider-label">ou</span>
+        <span></span>
+      </div>
+      <button type="button" class="btnSecondary" (click)="navigate()">
+        {{ secondaryButtonText() }}
+      </button>
+    </div>
+  </section>
 </main>

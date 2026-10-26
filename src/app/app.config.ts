@@ -11,7 +11,15 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideToastr(),
+    provideToastr({
+      positionClass: 'toast-top-right',
+      timeOut: 5000,
+      closeButton: true,
+      progressBar: true,
+      progressAnimation: 'decreasing',
+      preventDuplicates: true,
+      newestOnTop: true,
+    }),
     provideClientHydration(withEventReplay()),
     provideHttpClient(withFetch(), withInterceptors([authInterceptor]))
   ]
