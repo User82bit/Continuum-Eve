@@ -13,12 +13,14 @@ export class AuthService {
 
   // URL base do Adan-Stella
   private readonly apiUrl = 'http://localhost:5171/api/auth';
+  private readonly profileApiUrl = 'http://localhost:5171/api/profile';
 
   // ── Register ────────────────────────────────────────────────────────────────
   register(username: string, email: string, password: string) {
     return this.http
       .post<AuthResponse>(`${this.apiUrl}/register`, { username, email, password })
       .pipe(
+        map((response) => ({ ...response, email: response.email || email.trim() })),
         tap((response) => {
           this.saveSession(response);
         })
@@ -30,10 +32,17 @@ export class AuthService {
     return this.http
       .post<AuthResponse>(`${this.apiUrl}/login`, { email, password })
       .pipe(
+        map((response) => ({ ...response, email: response.email || email.trim() })),
         tap((response) => {
           this.saveSession(response);
         })
       );
+  }
+
+  updateProfileImage(file: File): Observable<{ imgUrl: string }> {
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+    return this.http.post<{ imgUrl: string }>(`${this.profileApiUrl}/avatar`, formData);
   }
 
   // ── Check Email Exists ──────────────────────────────────────────────────────
@@ -83,11 +92,11 @@ export class AuthService {
     this.sessionService.setSession(
         response.token, 
         response.isAdmin, 
-        response.email, // Assume email is in response, adjust if not
+        response.email || null,
         response.username,
         response.userId.toString(),
-        response.imgUrl,
-        response.createAt
+        response.imgUrl || null,
+        response.createAt || null
     );
   }
 }
