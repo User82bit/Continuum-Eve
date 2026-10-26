@@ -4,7 +4,7 @@
       <img class="logo-icon" src="assets/png/logoBg-main.png" alt="Projeto Éden" width="190" height="62" />
     </a>
     <a class="account-link" routerLink="/profile" aria-label="Abrir perfil" title="Perfil">
-      <img src="assets/svg/user-icon.svg" width="24" height="24" alt="" />
+      <img [src]="avatarUrl() || 'assets/svg/user-icon.svg'" [class.avatar-photo]="!!avatarUrl()" width="32" height="32" alt="" />
     </a>
   </header>
 
