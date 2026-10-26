@@ -45,7 +45,13 @@ export class Controller implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // Mantém o listener ativo durante a ordem final de parada.
+    const current = this.currentCommand();
+    // O serviço só acompanha movimentos do gamepad físico. Se o comando
+    // ativo veio do controle virtual, a tela é responsável pela parada final.
+    if (current.gamepadId === 'Controle virtual' && (current.x !== 0 || current.y !== 0)) {
+      this.robotService.sendCommand({ x: 0, y: 0, connected: false, gamepadId: 'Controle virtual' });
+    }
+
     this.gamepadService.deactivate();
     this.commandSub?.unsubscribe();
     this.connectedSub?.unsubscribe();

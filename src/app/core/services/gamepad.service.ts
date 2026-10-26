@@ -30,7 +30,12 @@ export class GamepadService implements OnDestroy {
     this.gamepadIndex = -1;
     this.connected$.next(false);
     this.stopPolling();
-    this.emitStop();
+
+    if (this.lastCommand.x !== 0 || this.lastCommand.y !== 0) {
+      this.emitStop();
+    } else {
+      this.lastCommand = { x: 0, y: 0, connected: false, gamepadId: '' };
+    }
   };
 
   constructor() {
@@ -46,8 +51,7 @@ export class GamepadService implements OnDestroy {
 
     // Alguns navegadores só disparam gamepadconnected após um botão ser usado.
     // Também inspecionamos os controles já conectados quando a tela é aberta.
-    const gamepads = navigator.getGamepads();
-    const existing = Array.from(gamepads).find((gamepad) => gamepad?.connected);
+    const existing = Array.from(navigator.getGamepads()).find((gamepad) => gamepad?.connected);
     if (existing) {
       this.gamepadIndex = existing.index;
       this.connected$.next(true);
@@ -57,8 +61,9 @@ export class GamepadService implements OnDestroy {
 
   deactivate(): void {
     if (!this.active) return;
-    // Garante parada antes de a tela de controle deixar de ouvir os comandos.
-    this.emitStop();
+
+    // Só envia parada se o último estado físico era de movimento.
+    if (this.lastCommand.x !== 0 || this.lastCommand.y !== 0) this.emitStop();
     this.active = false;
     this.gamepadIndex = -1;
     this.connected$.next(false);
@@ -84,7 +89,11 @@ export class GamepadService implements OnDestroy {
     if (!gamepad) {
       this.gamepadIndex = -1;
       this.connected$.next(false);
-      this.emitStop();
+      if (this.lastCommand.x !== 0 || this.lastCommand.y !== 0) {
+        this.emitStop();
+      } else {
+        this.lastCommand = { x: 0, y: 0, connected: false, gamepadId: '' };
+      }
       this.animFrameId = 0;
       return;
     }

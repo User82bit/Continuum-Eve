@@ -1,6 +1,6 @@
-import { AbstractControl, Component, ValidationErrors, ValidatorFn } from '@angular/core';
+import { Component } from '@angular/core';
+import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { DefaultLoginLayout } from '../../../shared/layout/default-login-layout/default-login-layout';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PrimaryInput } from '../../../shared/ui/primary-input/primary-input';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
