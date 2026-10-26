@@ -1,9 +1,8 @@
 @use "../../../../styles/_breakpoints.scss" as *;
 @use "../../../../styles/_variables.scss" as *;
 
-main {
+.default-login-layout {
     display: flex;
-    min-height: 100vh;
     min-height: 100dvh;
     align-items: center;
     justify-content: center;
@@ -16,12 +15,13 @@ main {
 
     @include lg {
         justify-content: flex-end;
-        padding: 48px 8vw;
+        padding: 0px 5px;
     }
 
     .form-section {
         width: 100%;
-        max-width: 440px;
+        max-width: 44dvw;
+        min-height: 70dvh;
         display: flex;
         flex-direction: column;
         align-items: center;
