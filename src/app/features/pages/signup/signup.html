@@ -8,16 +8,16 @@
 >
   <form class="auth-form" [formGroup]="SignupForm" (keydown.enter)="handleEnter($event)">
     <app-primary-input formControlName="username" type="text" inputName="username" autocomplete="name" label="Nome" placeHolder="Seu nome completo">
-      <img src="assets/svg/user-icon.svg" alt="" />
+      <img src="assets/svg/user-icon.svg" alt="" width="20" height="20" />
     </app-primary-input>
     <app-primary-input formControlName="email" type="email" inputName="email" autocomplete="email" label="E-mail" placeHolder="voce@exemplo.com">
-      <img src="assets/svg/email-icon.svg" alt="" />
+      <img src="assets/svg/email-icon.svg" alt="" width="20" height="20" />
     </app-primary-input>
     <app-primary-input formControlName="password" type="password" inputName="password" autocomplete="new-password" label="Senha" placeHolder="Mínimo de 6 caracteres">
-      <img src="assets/svg/password-icon.svg" alt="" />
+      <img src="assets/svg/password-icon.svg" alt="" width="20" height="20" />
     </app-primary-input>
     <app-primary-input formControlName="passwordConfirme" type="password" inputName="passwordConfirme" autocomplete="new-password" label="Confirmar senha" placeHolder="Digite a senha novamente">
-      <img src="assets/svg/password-icon.svg" alt="" />
+      <img src="assets/svg/password-icon.svg" alt="" width="20" height="20" />
     </app-primary-input>
     @if (SignupForm.hasError('passwordMismatch') && SignupForm.controls.passwordConfirme.touched) {
       <p class="form-error">As senhas não coincidem.</p>
