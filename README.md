@@ -60,3 +60,17 @@ For more information on using the Angular CLI, including detailed command refere
 # Continuum-Eve
 
 ### v0.60.0
+
+
+## UmbrellA — chats persistentes
+
+O widget flutuante usa a API anônima do Adan-Stella e permite criar, alternar e excluir conversas sem recarregar a página. O Continuum-Eve envia um identificador estável do navegador em `X-Umbrella-Owner`; o JWT de autenticação do Continuum-Eve não é encaminhado à API da UmbrellA.
+
+### Configuração
+
+- Desenvolvimento local: execute o Adan-Stella com `dotnet run --launch-profile http` e use `http://localhost:5171` em `src/environments/environment.ts`.
+- Produção: o build usa origem relativa por padrão. Configure o reverse proxy HTTPS do domínio do Continuum-Eve para encaminhar `/api/umbrella/*` ao Adan-Stella, ou ajuste `src/environments/environment.prod.ts` para uma origem HTTPS pública.
+- O Adan-Stella precisa permitir a origem exata do Continuum-Eve em `Cors:AllowedOrigins`.
+- O runtime Python precisa estar pronto e o adaptador Core treinado instalado em `IAs/ChatBOT/Adapters/Core`; sem ele, a API pode responder indisponibilidade mesmo quando o servidor ASP.NET está no ar.
+
+A integração usa `GET/POST/DELETE /api/umbrella/chats` e `POST /api/umbrella/chat`. As chamadas são feitas sem o interceptor JWT do Continuum-Eve para manter os limites de autenticação entre os projetos.
