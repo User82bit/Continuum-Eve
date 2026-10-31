@@ -1,3 +1,5 @@
+## Versão atual: v0.62.0
+
 # [Continuum-Eve](https://continuum-eve.vercel.app)
 [![Version](https://img.shields.io/badge/version-v1.0-orange.svg)](https://github.com/User82bit/Continuum-Eve/deployments/Production)
 
