@@ -1,20 +1,24 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Component, DestroyRef, computed, inject, signal, PLATFORM_ID } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs';
-import {
-  ChatbotHistoryMessage,
-  ChatbotService,
-} from '../../../core/services/chatbot.service';
+import { ChatSessionDetail, ChatSessionSummary, ChatbotService } from '../../../core/services/chatbot.service';
 
 type ChatRole = 'assistant' | 'user';
 
 interface ChatMessage {
-  id: number;
+  id: string;
   role: ChatRole;
   content: string;
   isError?: boolean;
 }
+
+const WELCOME_MESSAGE: ChatMessage = {
+  id: 'welcome',
+  role: 'assistant',
+  content: 'Olá! Sou a UmbrellA do Projeto Éden. O que você gostaria de saber?',
+};
 
 @Component({
   selector: 'app-chatbot-island',
@@ -25,22 +29,24 @@ interface ChatMessage {
 export class ChatbotIsland {
   private readonly chatbotService = inject(ChatbotService);
   private readonly destroyRef = inject(DestroyRef);
-  private nextMessageId = 1;
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   readonly isOpen = signal(false);
   readonly isSending = signal(false);
+  readonly isLoadingChats = signal(false);
   readonly draft = signal('');
-  readonly messages = signal<ChatMessage[]>([
-    {
-      id: 0,
-      role: 'assistant',
-      content: 'Olá! Sou o chatbot do Projeto Éden. O que você gostaria de saber?',
-    },
-  ]);
+  readonly chats = signal<ChatSessionSummary[]>([]);
+  readonly activeChatId = signal<string | null>(null);
+  readonly messages = signal<ChatMessage[]>([WELCOME_MESSAGE]);
   readonly canSend = computed(() => this.draft().trim().length > 0 && !this.isSending());
+
+  constructor() {
+    if (this.isBrowser) this.loadChats();
+  }
 
   toggle(): void {
     this.isOpen.update((open) => !open);
+    if (this.isOpen() && this.isBrowser) this.loadChats();
   }
 
   close(): void {
@@ -56,95 +62,156 @@ export class ChatbotIsland {
     this.sendMessage();
   }
 
-  private sendMessage(): void {
-    const message = this.draft().trim();
-    if (!message || this.isSending()) return;
-
-    const history = this.getCompletedHistory();
-    this.messages.update((current) => [
-      ...current,
-      { id: this.nextMessageId++, role: 'user', content: message },
-    ]);
-    this.draft.set('');
-    this.isSending.set(true);
-
-    this.chatbotService
-      .sendMessage(message, history)
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        finalize(() => this.isSending.set(false)),
-      )
+  loadChats(): void {
+    if (this.isLoadingChats()) return;
+    this.isLoadingChats.set(true);
+    this.chatbotService.listChats()
+      .pipe(takeUntilDestroyed(this.destroyRef), finalize(() => this.isLoadingChats.set(false)))
       .subscribe({
         next: (result) => {
-          const reply = result?.reply?.trim();
-          this.messages.update((current) => [
-            ...current,
-            {
-              id: this.nextMessageId++,
-              role: 'assistant',
-              content: reply || 'Não recebi uma resposta válida do chatbot.',
-            },
-          ]);
+          const chats = result?.chats ?? [];
+          this.chats.set(chats);
+          const current = this.activeChatId();
+          if (current && chats.some((chat) => chat.id === current)) return;
+          if (chats.length > 0) this.openChat(chats[0].id);
+          else {
+            this.activeChatId.set(null);
+            this.messages.set([WELCOME_MESSAGE]);
+          }
         },
         error: (error: unknown) => {
-          this.messages.update((current) => [
-            ...current,
-            {
-              id: this.nextMessageId++,
-              role: 'assistant',
-              isError: true,
-              content: this.describeError(error),
-            },
-          ]);
+          // A falha de listagem não impede uma tentativa de iniciar uma conversa.
+          console.warn('[UmbrellA] Não foi possível listar as conversas.', error);
         },
       });
   }
 
-  private getCompletedHistory(): ChatbotHistoryMessage[] {
-    const transcript = this.messages().slice(1);
-    const completedTurns: ChatbotHistoryMessage[] = [];
+  createNewChat(): void {
+    if (this.isSending()) return;
+    this.chatbotService.createChat()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (chat) => {
+          this.chats.update((current) => [chat, ...current.filter((item) => item.id !== chat.id)]);
+          this.activeChatId.set(chat.id);
+          this.messages.set([WELCOME_MESSAGE]);
+        },
+        error: (error: unknown) => this.appendError(this.describeError(error)),
+      });
+  }
 
-    for (let index = 0; index < transcript.length - 1; index++) {
-      const userMessage = transcript[index];
-      const assistantMessage = transcript[index + 1];
+  openChat(chatId: string): void {
+    if (this.isSending() || chatId === this.activeChatId()) return;
+    this.chatbotService.getChat(chatId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (chat: ChatSessionDetail) => {
+          this.activeChatId.set(chat.id);
+          const loaded = (chat.messages ?? [])
+            .filter((message) => message.role !== 'system')
+            .map((message) => ({
+              id: String(message.id),
+              role: message.role as ChatRole,
+              content: message.content,
+            }));
+          this.messages.set(loaded.length ? loaded : [WELCOME_MESSAGE]);
+        },
+        error: (error: unknown) => this.appendError(this.describeError(error)),
+      });
+  }
 
-      if (
-        userMessage.role === 'user' &&
-        assistantMessage.role === 'assistant' &&
-        !assistantMessage.isError
-      ) {
-        completedTurns.push(
-          { role: 'user', content: userMessage.content },
-          { role: 'assistant', content: assistantMessage.content },
-        );
-        index++;
-      }
+  deleteChat(chatId: string, event: Event): void {
+    event.stopPropagation();
+    if (this.isSending()) return;
+    this.chatbotService.deleteChat(chatId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          const remaining = this.chats().filter((chat) => chat.id !== chatId);
+          this.chats.set(remaining);
+          if (this.activeChatId() === chatId) {
+            this.activeChatId.set(null);
+            this.messages.set([WELCOME_MESSAGE]);
+            if (remaining.length > 0) this.openChat(remaining[0].id);
+          }
+        },
+        error: (error: unknown) => this.appendError(this.describeError(error)),
+      });
+  }
+
+  private sendMessage(): void {
+    const message = this.draft().trim();
+    if (!message || this.isSending()) return;
+    this.draft.set('');
+    this.isSending.set(true);
+
+    const send = (chatId: string) => {
+      this.activeChatId.set(chatId);
+      this.messages.update((current) => [
+        ...current,
+        { id: 'user-' + Date.now(), role: 'user', content: message },
+      ]);
+      this.chatbotService.sendMessage(message, chatId)
+        .pipe(
+          takeUntilDestroyed(this.destroyRef),
+          finalize(() => this.isSending.set(false)),
+        )
+        .subscribe({
+          next: (result) => {
+            this.messages.update((current) => [
+              ...current,
+              {
+                id: 'assistant-' + Date.now(),
+                role: 'assistant',
+                content: result?.reply?.trim() || 'Não recebi uma resposta válida da UmbrellA.',
+              },
+            ]);
+            this.loadChats();
+          },
+          error: (error: unknown) => this.appendError(this.describeError(error)),
+        });
+    };
+
+    const currentId = this.activeChatId();
+    if (currentId) {
+      send(currentId);
+      return;
     }
 
-    // O modelo tem uma janela curta de tokens: envia apenas os dois turnos mais recentes.
-    return completedTurns.slice(-4);
+    this.chatbotService.createChat(message.slice(0, 64) || 'Nova conversa')
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (chat) => {
+          this.chats.update((current) => [chat, ...current]);
+          send(chat.id);
+        },
+        error: (error: unknown) => {
+          this.isSending.set(false);
+          this.appendError(this.describeError(error));
+        },
+      });
+  }
+
+  private appendError(content: string): void {
+    this.messages.update((current) => [
+      ...current,
+      { id: 'error-' + Date.now(), role: 'assistant', content, isError: true },
+    ]);
   }
 
   private describeError(error: unknown): string {
     if (error instanceof HttpErrorResponse) {
-      const payload = error.error as { error?: unknown } | null;
-      if (typeof payload?.error === 'string' && payload.error.trim()) {
-        return payload.error;
-      }
-
+      const payload = error.error as { error?: unknown; detail?: unknown } | null;
+      if (typeof payload?.error === 'string' && payload.error.trim()) return payload.error;
+      if (typeof payload?.detail === 'string' && payload.detail.trim()) return payload.detail;
       if (error.status === 0) {
-        return 'Não consegui conectar ao Adan-Stella. Verifique se a API está em execução e se o endereço configurado está correto.';
+        return 'Não consegui alcançar o Adan-Stella. Confira o endereço da API, HTTPS, CORS e se o backend está acessível pela rede.';
       }
-
-      if (error.status === 401 || error.status === 403) {
-        return 'Sua sessão não foi autorizada. Entre novamente no Continuum-Eve e tente outra vez.';
-      }
-
       if (error.status === 503) {
-        return 'O chatbot está temporariamente indisponível porque o modelo ainda não foi carregado.';
+        return 'A API do Adan-Stella respondeu, mas o runtime da UmbrellA está indisponível ou ainda não carregou o modelo.';
       }
+      if (error.status === 404) return 'A conversa não foi encontrada. Atualize a lista de chats e tente novamente.';
     }
-
-    return 'Não foi possível enviar sua mensagem. Tente novamente.';
+    return error instanceof Error ? error.message : 'Não foi possível concluir a operação com a UmbrellA.';
   }
 }
