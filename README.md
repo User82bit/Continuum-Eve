@@ -1,7 +1,5 @@
-## Versão atual: v0.62.0
-
 # [Continuum-Eve](https://continuum-eve.vercel.app)
-[![Version](https://img.shields.io/badge/version-v1.0-orange.svg)](https://github.com/User82bit/Continuum-Eve/deployments/Production)
+[![Version](https://img.shields.io/badge/version-v1.1.0-orange.svg)](https://github.com/User82bit/Continuum-Eve/deployments/Production)
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.4.
 
