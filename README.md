@@ -58,3 +58,14 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+
+## UmbrellA e contexto de telemetria
+
+A Dynamic Island envia ao Adan-Stella, junto com cada mensagem, um resumo do estado já recebido pelo `RobotHub`: estado da conexão, horário do último pacote válido, bateria, distância ultrassônica e total de plantas quando esses valores existem.
+
+O resumo é montado localmente a partir dos mesmos campos que o dashboard já lê. Dados ausentes permanecem `null`; nenhum valor fictício é criado. O payload bruto MQTT, imagens da câmera e comandos de movimento não são encaminhados para a UmbrellA.
+
+O Adan-Stella recebe esse resumo pelo campo `robotContext`, separado de `sensorContext` (usado pelo School Safe). A autenticação do Continuum-Eve não é compartilhada com o chat.
+
+A UmbrellA pode explicar os indicadores, mas não controla o robô. A IA física ESP-CONTROLL, a API de comandos e as proteções de movimento permanecem separadas.

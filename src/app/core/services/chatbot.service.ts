@@ -2,6 +2,7 @@ import { HttpBackend, HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import type { RobotContextSnapshot } from '../models/robot-context.model';
 
 export type ChatbotRole = 'assistant' | 'user';
 
@@ -85,11 +86,12 @@ export class ChatbotService {
     );
   }
 
-  sendMessage(message: string, conversationId: string): Observable<ChatbotReply> {
+  sendMessage(message: string, conversationId: string, robotContext?: RobotContextSnapshot): Observable<ChatbotReply> {
     return this.http.post<ChatbotReply>(this.url('/chat'), {
       message,
       conversationId,
       maxNewTokens: 160,
+      ...(robotContext ? { robotContext } : {}),
     }, { headers: this.headers });
   }
 }
