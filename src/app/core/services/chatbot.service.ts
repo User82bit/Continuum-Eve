@@ -2,7 +2,7 @@ import { HttpBackend, HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { RobotContextSnapshot } from '../models/robot-context.model';
+import type { RobotContextSnapshot } from '../models/robot-context.model';
 
 export type ChatbotRole = 'assistant' | 'user';
 
