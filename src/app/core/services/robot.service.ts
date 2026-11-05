@@ -4,7 +4,7 @@ import { Injectable, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
 import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { GamepadCommand } from '../models/gamepad-command.model';
-import { RobotContextSnapshot } from '../models/robot-context.model';
+import type { RobotContextSnapshot } from '../models/robot-context.model';
 
 export type RobotConnectionState = 'connecting' | 'connected' | 'reconnecting' | 'disconnected';
 
@@ -110,16 +110,16 @@ export class RobotService implements OnDestroy {
       'PlantasPlantadas',
     ]);
 
-    if (distance !== null && distance >= 0) {
-      this.latestDistance = distance;
+    if (distance !== null) {
+      this.latestDistance = Math.max(0, distance);
       receivedKnownMetric = true;
     }
-    if (battery !== null && battery >= 0 && battery <= 100) {
-      this.latestBattery = battery;
+    if (battery !== null) {
+      this.latestBattery = Math.max(0, Math.min(100, battery));
       receivedKnownMetric = true;
     }
-    if (planted !== null && planted >= 0) {
-      this.latestTotalPlanted = planted;
+    if (planted !== null) {
+      this.latestTotalPlanted = Math.max(0, planted);
       receivedKnownMetric = true;
     }
 
