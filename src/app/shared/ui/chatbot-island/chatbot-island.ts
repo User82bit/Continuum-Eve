@@ -4,6 +4,7 @@ import { Component, DestroyRef, computed, inject, signal, PLATFORM_ID } from '@a
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs';
 import { ChatSessionDetail, ChatSessionSummary, ChatbotService } from '../../../core/services/chatbot.service';
+import { RobotService } from '../../../core/services/robot.service';
 
 type ChatRole = 'assistant' | 'user';
 
@@ -28,6 +29,7 @@ const WELCOME_MESSAGE: ChatMessage = {
 })
 export class ChatbotIsland {
   private readonly chatbotService = inject(ChatbotService);
+  private readonly robotService = inject(RobotService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
@@ -151,7 +153,7 @@ export class ChatbotIsland {
         ...current,
         { id: 'user-' + Date.now(), role: 'user', content: message },
       ]);
-      this.chatbotService.sendMessage(message, chatId)
+      this.chatbotService.sendMessage(message, chatId, this.robotService.getUmbrellaContext())
         .pipe(
           takeUntilDestroyed(this.destroyRef),
           finalize(() => this.isSending.set(false)),
