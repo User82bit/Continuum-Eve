@@ -16,6 +16,7 @@ import { GamepadCommand } from '../../core/models/gamepad-command.model';
 export class Controller implements OnInit, OnDestroy {
   private readonly gamepadService = inject(GamepadService);
   private readonly robotService = inject(RobotService);
+  private lastSentDriveDirection = 'STOP';
 
   readonly currentCommand = signal<GamepadCommand>({ x: 0, y: 0, connected: false, gamepadId: '' });
   readonly isConnected = signal(false);
@@ -34,11 +35,12 @@ export class Controller implements OnInit, OnDestroy {
       }
     });
 
-    // A telemetria visual e o envio HTTP usam a mesma emissão de comando.
+    // A interface atualiza os eixos; o backend só recebe uma ordem quando
+    // a direção WASD muda, evitando POSTs repetidos para a mesma direção.
     this.commandSub = this.gamepadService.command$.subscribe((command) => {
       this.currentCommand.set(command);
       this.direction.set(this.calculateDirection(command));
-      this.robotService.sendCommand(command);
+      this.sendIfDriveDirectionChanged(command);
     });
 
     this.gamepadService.activate();
@@ -68,6 +70,29 @@ export class Controller implements OnInit, OnDestroy {
     return parts.join(' + ');
   }
 
+  /**
+   * Adan-Stella converts each HTTP command to one WASD/STOP MQTT message.
+   * Sending only on direction changes avoids flooding the backend while an
+   * analog stick reports tiny value variations.
+   */
+  private sendIfDriveDirectionChanged(command: GamepadCommand): void {
+    const nextDirection = this.toDriveDirection(command);
+    if (nextDirection === this.lastSentDriveDirection) return;
+
+    this.lastSentDriveDirection = nextDirection;
+    this.robotService.sendCommand(command);
+  }
+
+  private toDriveDirection(command: GamepadCommand): string {
+    const threshold = 0.1;
+    const x = Math.abs(command.x) <= threshold ? 0 : command.x;
+    const y = Math.abs(command.y) <= threshold ? 0 : command.y;
+
+    if (x === 0 && y === 0) return 'STOP';
+    if (Math.abs(y) >= Math.abs(x)) return y > 0 ? 'W' : 'S';
+    return x > 0 ? 'D' : 'A';
+  }
+
   toPercent(value: number): number {
     return Math.round(Math.min(1, Math.abs(value)) * 100);
   }
@@ -81,7 +106,7 @@ export class Controller implements OnInit, OnDestroy {
     this.virtualActive.set(true);
     this.currentCommand.set(command);
     this.direction.set(this.calculateDirection(command));
-    this.robotService.sendCommand(command);
+    this.sendIfDriveDirectionChanged(command);
   }
 
   stopVirtualCommand(): void {
