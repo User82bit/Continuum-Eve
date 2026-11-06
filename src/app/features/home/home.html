@@ -25,7 +25,13 @@
     <section class="metrics-section" aria-label="Telemetria do robô">
       <div class="metrics-heading">
         <div><p class="page-eyebrow">TELEMETRIA</p><h2>Indicadores do sistema</h2></div>
-        <span class="metrics-note">Os valores aparecem quando enviados pelo backend.</span>
+        <span class="metrics-note" aria-live="polite">
+          @if (lastTelemetryAt) {
+            Último pacote ESP: {{ lastTelemetryAt | date: 'dd/MM/yyyy HH:mm:ss' }}
+          } @else {
+            Aguardando pacote de telemetria do ESP.
+          }
+        </span>
       </div>
 
       <div class="metrics-grid">

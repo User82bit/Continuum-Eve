@@ -1,4 +1,4 @@
-<section class="island" [class.island-open]="isOpen()">
+<section class="island" [class.island-open]="isOpen()" animate.enter="island-enter">
   <button
     class="island-trigger"
     type="button"
@@ -24,7 +24,7 @@
   </button>
 
   @if (isOpen()) {
-    <div class="chat-panel" id="chatbot-conversation">
+    <div class="chat-panel" id="chatbot-conversation" animate.enter="chat-panel-enter" animate.leave="chat-panel-leave">
       <header class="chat-header">
         <div class="chat-heading">
           <span class="chat-kicker">PROJETO ÉDEN</span>

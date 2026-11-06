@@ -1,11 +1,12 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Injectable, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
+import { Injectable, NgZone, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { GamepadCommand } from '../models/gamepad-command.model';
 
 @Injectable({ providedIn: 'root' })
 export class GamepadService implements OnDestroy {
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly ngZone = inject(NgZone);
 
   readonly command$ = new Subject<GamepadCommand>();
   readonly connected$ = new BehaviorSubject<boolean>(false);
@@ -21,14 +22,14 @@ export class GamepadService implements OnDestroy {
   private readonly onGamepadConnected = (event: GamepadEvent): void => {
     if (!this.active) return;
     this.gamepadIndex = event.gamepad.index;
-    this.connected$.next(true);
+    this.publishConnection(true);
     this.startPolling();
   };
 
   private readonly onGamepadDisconnected = (event: GamepadEvent): void => {
     if (!this.active || event.gamepad.index !== this.gamepadIndex) return;
     this.gamepadIndex = -1;
-    this.connected$.next(false);
+    this.publishConnection(false);
     this.stopPolling();
 
     if (this.lastCommand.x !== 0 || this.lastCommand.y !== 0) {
@@ -54,7 +55,7 @@ export class GamepadService implements OnDestroy {
     const existing = Array.from(navigator.getGamepads()).find((gamepad) => gamepad?.connected);
     if (existing) {
       this.gamepadIndex = existing.index;
-      this.connected$.next(true);
+      this.publishConnection(true);
       this.startPolling();
     }
   }
@@ -66,13 +67,14 @@ export class GamepadService implements OnDestroy {
     if (this.lastCommand.x !== 0 || this.lastCommand.y !== 0) this.emitStop();
     this.active = false;
     this.gamepadIndex = -1;
-    this.connected$.next(false);
+    this.publishConnection(false);
     this.stopPolling();
   }
 
   private startPolling(): void {
     this.stopPolling();
-    this.poll();
+    // Polling de hardware não precisa disparar change detection em toda a aplicação.
+    this.ngZone.runOutsideAngular(() => this.poll());
   }
 
   private stopPolling(): void {
@@ -88,7 +90,7 @@ export class GamepadService implements OnDestroy {
 
     if (!gamepad) {
       this.gamepadIndex = -1;
-      this.connected$.next(false);
+      this.publishConnection(false);
       if (this.lastCommand.x !== 0 || this.lastCommand.y !== 0) {
         this.emitStop();
       } else {
@@ -109,7 +111,7 @@ export class GamepadService implements OnDestroy {
 
     if ((changed && throttlePassed) || stopping) {
       const command: GamepadCommand = { x, y, connected: true, gamepadId: gamepad.id };
-      this.command$.next(command);
+      this.publishCommand(command);
       this.lastCommand = command;
       this.lastSentTime = now;
     }
@@ -117,9 +119,18 @@ export class GamepadService implements OnDestroy {
     this.animFrameId = requestAnimationFrame(this.poll);
   };
 
+  private publishConnection(connected: boolean): void {
+    if (this.connected$.value === connected) return;
+    this.ngZone.run(() => this.connected$.next(connected));
+  }
+
+  private publishCommand(command: GamepadCommand): void {
+    this.ngZone.run(() => this.command$.next(command));
+  }
+
   private emitStop(): void {
     const stopCommand: GamepadCommand = { x: 0, y: 0, connected: false, gamepadId: '' };
-    this.command$.next(stopCommand);
+    this.publishCommand(stopCommand);
     this.lastCommand = stopCommand;
     this.lastSentTime = isPlatformBrowser(this.platformId) ? performance.now() : 0;
   }

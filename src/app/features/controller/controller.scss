@@ -24,8 +24,8 @@
   border-radius: 24px;
   background: rgba(255, 255, 255, 0.88);
   box-shadow: 0 10px 34px rgba(25, 42, 32, 0.055), inset 0 1px 0 rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .status-badge {
@@ -81,6 +81,7 @@
   grid-template-areas: '. forward .' 'left center right' '. backward .';
   gap: 0.7rem;
   touch-action: none;
+  contain: layout paint;
 }
 
 .virtual-button {
@@ -125,7 +126,7 @@
   font-weight: 750;
 }
 
-.hud { display: flex; width: 100%; flex-direction: column; gap: 1.6rem; padding: clamp(1.2rem, 4vw, 2.5rem); }
+.hud { contain: layout paint; display: flex; width: 100%; flex-direction: column; gap: 1.6rem; padding: clamp(1.2rem, 4vw, 2.5rem); }
 .gamepad-id { max-width: 40%; overflow: hidden; color: $color-text-muted; font-size: 0.8rem; text-overflow: ellipsis; white-space: nowrap; }
 
 .gauge-group { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; width: 100%; }
@@ -182,6 +183,10 @@
   .empty-mark { display: grid; width: 56px; height: 56px; place-items: center; margin-bottom: 1rem; border: 1px solid rgba(20, 125, 112, 0.17); border-radius: 17px; color: $color-green-primary; background: $color-accent-soft; font-size: 1.5rem; }
   h2 { margin: 0; color: $color-text-primary; font-size: 1.2rem; }
   p { max-width: 28rem; margin: 0.6rem 0 0; color: $color-text-secondary; font-size: 0.92rem; line-height: 1.6; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .virtual-button, .gauge-fill, .steer-indicator { transition: none; }
 }
 
 @media (max-width: 760px) {
