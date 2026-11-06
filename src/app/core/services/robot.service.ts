@@ -20,7 +20,7 @@ export interface RobotTelemetrySnapshot {
 export class RobotService implements OnDestroy {
   private readonly http = inject(HttpClient);
   private readonly platformId = inject(PLATFORM_ID);
-  private readonly apiBaseUrl = environment.umbrellaApiBaseUrl.replace(/\/+$/, '');
+  private readonly apiBaseUrl = environment.robotApiBaseUrl.replace(/\/+$/, '');
   private readonly commandUrl = `${this.apiBaseUrl}/api/robot/command`;
   private readonly robotHubUrl = `${this.apiBaseUrl}/robotHub`;
   private readonly hubConnection: HubConnection | null;
