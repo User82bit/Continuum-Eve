@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { LayoutMainInterface } from '../../shared/layout/layout-main-interface/layout-main-interface';
 import { Card } from '../../shared/ui/card/card';
 import { MapInfoComponent } from '../../shared/ui/map-info-component/map-info-component';
-import { RobotConnectionState, RobotService } from '../../core/services/robot.service';
+import { RobotConnectionState, RobotService, RobotTelemetrySnapshot } from '../../core/services/robot.service';
 
 @Component({
   selector: 'app-home',
@@ -14,7 +14,7 @@ import { RobotConnectionState, RobotService } from '../../core/services/robot.se
 })
 export class Home implements OnInit, OnDestroy {
   private readonly robotService = inject(RobotService);
-  private robotDataSubscription?: Subscription;
+  private telemetrySubscription?: Subscription;
   private connectionSubscription?: Subscription;
 
   status = 'Conectando...';
@@ -22,6 +22,7 @@ export class Home implements OnInit, OnDestroy {
   battery: number | null = null;
   distance: number | null = null;
   totalPlanted: number | null = null;
+  lastTelemetryAt: string | null = null;
   isMapTrue = false;
 
   constructor(private readonly ngZone: NgZone, private readonly cdr: ChangeDetectorRef) {}
@@ -35,26 +36,27 @@ export class Home implements OnInit, OnDestroy {
       });
     });
 
-    this.robotDataSubscription = this.robotService.robotData$.subscribe((data) => {
-      const payload = this.toRecord(data);
-      if (!payload) return;
+    // BehaviorSubject replays the most recent ESP packet when the user returns to Home.
+    this.telemetrySubscription = this.robotService.telemetry$.subscribe((snapshot) => {
+      if (!snapshot) return;
 
       this.ngZone.run(() => {
-        const distance = this.readNumber(payload, ['distance', 'Distance', 'distancia', 'Distancia']);
-        const battery = this.readNumber(payload, ['battery', 'Battery', 'batteryPercent', 'BatteryPercent', 'nivelBateria', 'NivelBateria']);
-        const planted = this.readNumber(payload, ['totalPlanted', 'TotalPlanted', 'plantsPlanted', 'PlantsPlanted', 'plantasPlantadas', 'PlantasPlantadas']);
-
-        if (distance !== null) this.distance = Math.max(0, distance);
-        if (battery !== null) this.battery = Math.max(0, Math.min(100, battery));
-        if (planted !== null) this.totalPlanted = Math.max(0, planted);
+        this.applyTelemetry(snapshot);
         this.cdr.markForCheck();
       });
     });
   }
 
   ngOnDestroy(): void {
-    this.robotDataSubscription?.unsubscribe();
+    this.telemetrySubscription?.unsubscribe();
     this.connectionSubscription?.unsubscribe();
+  }
+
+  private applyTelemetry(snapshot: RobotTelemetrySnapshot): void {
+    this.battery = snapshot.batteryPercent;
+    this.distance = snapshot.distanceCm;
+    this.totalPlanted = snapshot.totalPlanted;
+    this.lastTelemetryAt = snapshot.receivedAt;
   }
 
   private connectionText(state: RobotConnectionState): string {
@@ -65,25 +67,6 @@ export class Home implements OnInit, OnDestroy {
       disconnected: 'Desconectado',
     };
     return labels[state];
-  }
-
-  private toRecord(data: unknown): Record<string, unknown> | null {
-    let payload = data;
-    if (typeof payload === 'string') {
-      try { payload = JSON.parse(payload) as unknown; } catch { return null; }
-    }
-    if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return null;
-    return payload as Record<string, unknown>;
-  }
-
-  private readNumber(record: Record<string, unknown>, keys: string[]): number | null {
-    for (const key of keys) {
-      const value = record[key];
-      if (value === null || value === undefined || value === '') continue;
-      const numericValue = typeof value === 'number' ? value : Number(value);
-      if (Number.isFinite(numericValue)) return Math.round(numericValue);
-    }
-    return null;
   }
 
   ToggleMap(): void { this.isMapTrue = true; }
