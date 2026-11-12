@@ -66,6 +66,6 @@ A Dynamic Island envia ao Adan-Stella, junto com cada mensagem, um resumo do est
 
 O resumo é montado localmente a partir dos mesmos campos que o dashboard já lê. Dados ausentes permanecem `null`; nenhum valor fictício é criado. O payload bruto MQTT, imagens da câmera e comandos de movimento não são encaminhados para a UmbrellA.
 
-O Adan-Stella recebe esse resumo pelo campo `robotContext`, separado de `sensorContext` (usado pelo School Safe). A autenticação do Continuum-Eve não é compartilhada com o chat.
+O Adan-Stella recebe esse resumo pelo campo `robotContext`, separado de `sensorContext` (usado pelo School Safe). As conversas persistentes do Continuum-Eve usam o JWT emitido pelo próprio Adan-Stella; o interceptor encaminha esse token somente à origem configurada da API. O token do JazzSecurity do School Safe não participa desse fluxo.
 
 A UmbrellA pode explicar os indicadores, mas não controla o robô. A IA física ESP-CONTROLL, a API de comandos e as proteções de movimento permanecem separadas.

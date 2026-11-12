@@ -1,4 +1,4 @@
-import { HttpBackend, HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -36,53 +36,31 @@ export interface ChatSessionDetail extends ChatSessionSummary {
 
 @Injectable({ providedIn: 'root' })
 export class ChatbotService {
-  // Bypass authInterceptor: UmbrellA is an anonymous, separate API and must not receive
-  // the Continuum-Eve JWT.
-  private readonly http = new HttpClient(inject(HttpBackend));
-  private readonly baseUrl = environment.umbrellaApiBaseUrl.replace(/\/+$/, '');
-  private readonly ownerId = this.getOwnerId();
-  private readonly headers = new HttpHeaders({ 'X-Umbrella-Owner': this.ownerId });
-
-  private getOwnerId(): string {
-    if (typeof localStorage === 'undefined') return 'continuum-ssr';
-    const key = 'continuum.umbrella.owner.v1';
-    let value = localStorage.getItem(key);
-    if (!value) {
-      value = typeof crypto !== 'undefined' && 'randomUUID' in crypto
-        ? crypto.randomUUID()
-        : 'continuum-' + Date.now() + '-' + Math.random().toString(36).slice(2);
-      localStorage.setItem(key, value);
-    }
-    return value;
-  }
+  // Uses HttpClient so the auth interceptor supplies the logged-in Adan-Stella JWT.
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = environment.apiBaseUrl.replace(/\/+$/, '');
 
   private url(path: string): string {
     return this.baseUrl + '/api/umbrella' + path;
   }
 
   listChats(): Observable<{ chats: ChatSessionSummary[] }> {
-    return this.http.get<{ chats: ChatSessionSummary[] }>(this.url('/chats'), {
-      headers: this.headers,
-    });
+    return this.http.get<{ chats: ChatSessionSummary[] }>(this.url('/chats'));
   }
 
   createChat(title = 'Nova conversa'): Observable<ChatSessionDetail> {
-    return this.http.post<ChatSessionDetail>(this.url('/chats'), { title }, {
-      headers: this.headers,
-    });
+    return this.http.post<ChatSessionDetail>(this.url('/chats'), { title });
   }
 
   getChat(chatId: string): Observable<ChatSessionDetail> {
     return this.http.get<ChatSessionDetail>(
       this.url('/chats/' + encodeURIComponent(chatId)),
-      { headers: this.headers },
     );
   }
 
   deleteChat(chatId: string): Observable<{ deleted: boolean; conversation_id: string }> {
     return this.http.delete<{ deleted: boolean; conversation_id: string }>(
       this.url('/chats/' + encodeURIComponent(chatId)),
-      { headers: this.headers },
     );
   }
 
@@ -92,6 +70,6 @@ export class ChatbotService {
       conversationId,
       maxNewTokens: 160,
       ...(robotContext ? { robotContext } : {}),
-    }, { headers: this.headers });
+    });
   }
 }

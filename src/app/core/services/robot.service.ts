@@ -1,11 +1,24 @@
 import { HttpClient } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
-import { Injectable, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
-import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
+import {
+  EffectRef,
+  Injectable,
+  OnDestroy,
+  PLATFORM_ID,
+  effect,
+  inject,
+} from '@angular/core';
+import {
+  HubConnection,
+  HubConnectionBuilder,
+  HubConnectionState,
+  LogLevel,
+} from '@microsoft/signalr';
 import { BehaviorSubject } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { GamepadCommand } from '../models/gamepad-command.model';
 import type { RobotContextSnapshot } from '../models/robot-context.model';
+import { SessionService } from './session.service';
 
 export type RobotConnectionState = 'connecting' | 'connected' | 'reconnecting' | 'disconnected';
 
@@ -20,13 +33,17 @@ export interface RobotTelemetrySnapshot {
 export class RobotService implements OnDestroy {
   private readonly http = inject(HttpClient);
   private readonly platformId = inject(PLATFORM_ID);
-  private readonly apiBaseUrl = environment.robotApiBaseUrl.replace(/\/+$/, '');
+  private readonly sessionService = inject(SessionService);
+  private readonly apiBaseUrl = environment.apiBaseUrl.replace(/\/+$/, '');
   private readonly commandUrl = `${this.apiBaseUrl}/api/robot/command`;
   private readonly robotHubUrl = `${this.apiBaseUrl}/robotHub`;
   private readonly hubConnection: HubConnection | null;
+  private readonly sessionEffect: EffectRef | null = null;
+  private hubStarting = false;
+  private destroyed = false;
 
   readonly telemetry$ = new BehaviorSubject<RobotTelemetrySnapshot | null>(null);
-  readonly connectionState$ = new BehaviorSubject<RobotConnectionState>('connecting');
+  readonly connectionState$ = new BehaviorSubject<RobotConnectionState>('disconnected');
 
   private lastTelemetryAt: string | null = null;
   private latestBattery: number | null = null;
@@ -36,12 +53,14 @@ export class RobotService implements OnDestroy {
   constructor() {
     if (!isPlatformBrowser(this.platformId)) {
       this.hubConnection = null;
-      this.connectionState$.next('disconnected');
       return;
     }
 
     this.hubConnection = new HubConnectionBuilder()
-      .withUrl(this.robotHubUrl)
+      .withUrl(this.robotHubUrl, {
+        // The backend accepts access_token only on /robotHub and /controllerHub.
+        accessTokenFactory: () => this.sessionService.token ?? '',
+      })
       .withAutomaticReconnect()
       .configureLogging(LogLevel.Warning)
       .build();
@@ -62,11 +81,47 @@ export class RobotService implements OnDestroy {
       this.connectionState$.next('disconnected');
     });
 
-    void this.hubConnection.start()
+    // RobotHub is AdminOnly. Wait for the authenticated admin session instead
+    // of making an unauthenticated connection during application startup.
+    this.sessionEffect = effect(() => {
+      const token = this.sessionService.tokenSignal();
+      const isAdmin = this.sessionService.isAdminSignal();
+      if (token && isAdmin) this.startHub();
+      else this.stopHub();
+    });
+  }
+
+  private startHub(): void {
+    const hub = this.hubConnection;
+    if (this.destroyed || !hub || this.hubStarting) return;
+    if (hub.state !== HubConnectionState.Disconnected) return;
+
+    this.hubStarting = true;
+    this.connectionState$.next('connecting');
+    void hub.start()
       .then(() => this.connectionState$.next('connected'))
       .catch((error: unknown) => {
         this.connectionState$.next('disconnected');
-        console.error('[RobotService] Erro ao conectar ao hub:', error);
+        console.error('[RobotService] Erro ao conectar ao hub autenticado:', error);
+      })
+      .finally(() => {
+        this.hubStarting = false;
+      });
+  }
+
+  private stopHub(): void {
+    const hub = this.hubConnection;
+    if (!hub || hub.state === HubConnectionState.Disconnected ||
+        hub.state === HubConnectionState.Disconnecting) {
+      this.connectionState$.next('disconnected');
+      return;
+    }
+
+    void hub.stop()
+      .catch((error: unknown) => console.warn('[RobotService] Falha ao encerrar o hub:', error))
+      .finally(() => {
+        this.connectionState$.next('disconnected');
+        if (!this.destroyed && this.sessionService.token && this.sessionService.isAdmin) this.startHub();
       });
   }
 
@@ -180,6 +235,11 @@ export class RobotService implements OnDestroy {
   }
 
   sendCommand(command: GamepadCommand): void {
+    if (!this.sessionService.token || !this.sessionService.isAdmin) {
+      console.warn('[RobotService] Comando ignorado: é necessária uma sessão administrativa válida.');
+      return;
+    }
+
     const x = Number(command.x.toFixed(2));
     const y = Number(command.y.toFixed(2));
 
@@ -189,8 +249,10 @@ export class RobotService implements OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.destroyed = true;
+    this.sessionEffect?.destroy();
     this.telemetry$.complete();
     this.connectionState$.complete();
-    void this.hubConnection?.stop();
+    this.stopHub();
   }
 }

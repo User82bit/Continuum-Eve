@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { tap, map, Observable, catchError, of } from 'rxjs';
 import { AuthResponse } from '../../shared/types/auth-response.type';
 import { SessionService } from './session.service';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -11,9 +12,10 @@ export class AuthService {
   private http = inject(HttpClient);
   private sessionService = inject(SessionService);
 
-  // URL base do Adan-Stella
-  private readonly apiUrl = 'http://localhost:5171/api/auth';
-  private readonly profileApiUrl = 'http://localhost:5171/api/profile';
+  // Todas as chamadas autenticadas usam a mesma origem pública/local do Adan-Stella.
+  private readonly apiBaseUrl = environment.apiBaseUrl.replace(/\/+$/, '');
+  private readonly apiUrl = `${this.apiBaseUrl}/api/auth`;
+  private readonly profileApiUrl = `${this.apiBaseUrl}/api/profile`;
 
   // ── Register ────────────────────────────────────────────────────────────────
   register(username: string, email: string, password: string) {
