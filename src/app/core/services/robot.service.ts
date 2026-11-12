@@ -40,6 +40,7 @@ export class RobotService implements OnDestroy {
   private readonly hubConnection: HubConnection | null;
   private readonly sessionEffect: EffectRef | null = null;
   private hubStarting = false;
+  private destroyed = false;
 
   readonly telemetry$ = new BehaviorSubject<RobotTelemetrySnapshot | null>(null);
   readonly connectionState$ = new BehaviorSubject<RobotConnectionState>('disconnected');
@@ -92,7 +93,7 @@ export class RobotService implements OnDestroy {
 
   private startHub(): void {
     const hub = this.hubConnection;
-    if (!hub || this.hubStarting) return;
+    if (this.destroyed || !hub || this.hubStarting) return;
     if (hub.state !== HubConnectionState.Disconnected) return;
 
     this.hubStarting = true;
@@ -105,11 +106,6 @@ export class RobotService implements OnDestroy {
       })
       .finally(() => {
         this.hubStarting = false;
-        if (this.sessionService.token && this.sessionService.isAdmin &&
-            hub.state === HubConnectionState.Disconnected) {
-          // A session may have changed while a previous connection was starting.
-          this.startHub();
-        }
       });
   }
 
@@ -125,7 +121,7 @@ export class RobotService implements OnDestroy {
       .catch((error: unknown) => console.warn('[RobotService] Falha ao encerrar o hub:', error))
       .finally(() => {
         this.connectionState$.next('disconnected');
-        if (this.sessionService.token && this.sessionService.isAdmin) this.startHub();
+        if (!this.destroyed && this.sessionService.token && this.sessionService.isAdmin) this.startHub();
       });
   }
 
@@ -253,6 +249,7 @@ export class RobotService implements OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.destroyed = true;
     this.sessionEffect?.destroy();
     this.telemetry$.complete();
     this.connectionState$.complete();
