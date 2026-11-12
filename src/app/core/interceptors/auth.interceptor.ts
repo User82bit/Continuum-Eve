@@ -1,17 +1,27 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { AuthService } from '../services/auth.service';
+import { environment } from '../../../environments/environment';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const authService = inject(AuthService);
-  const token = authService.getToken();
+  const apiBaseUrl = environment.apiBaseUrl.trim();
+  const token = inject(AuthService).getToken();
 
-  if (token) {
-    const cloned = req.clone({
-      headers: req.headers.set('Authorization', `Bearer ${token}`)
-    });
-    return next(cloned);
+  // Never forward the Adan-Stella JWT to Vercel assets or unrelated APIs.
+  if (!token || !apiBaseUrl) return next(req);
+
+  let apiOrigin: string;
+  let requestOrigin: string;
+  try {
+    apiOrigin = new URL(apiBaseUrl).origin;
+    requestOrigin = new URL(req.url, apiBaseUrl).origin;
+  } catch {
+    return next(req);
   }
 
-  return next(req);
+  if (requestOrigin !== apiOrigin) return next(req);
+
+  return next(req.clone({
+    setHeaders: { Authorization: `Bearer ${token}` },
+  }));
 };
